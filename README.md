@@ -1,0 +1,3 @@
+Constellate is an interactive visualization of the artists you listen to most on Spotify. The network graph links artists that are similar (according to Spotify's analysis), highlighting clusters or "constellations", which can be compared to those of other users that make their data public. Ideally, this visual representation helps you gain a better understanding of the types of music you and your friends listen to, and eventually leads to discovery of new artists and sounds.
+
+_Note: this is an evolving personal project that I'm using to put into practice some newly acquired skills in React and D3._
