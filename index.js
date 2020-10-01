@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cookieSession = require('cookie-session');
+const session = require('express-session');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 const keys = require('./config/keys');
@@ -19,9 +19,11 @@ const app = express();
 // Middleware
 app.use(bodyParser.json());
 app.use(
-  cookieSession({
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-    keys: [keys.cookieKey],
+  session({
+    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 },
+    secret: [keys.cookieKey],
+    resave: true,
+    saveUninitialized: false,
   })
 );
 app.use(passport.initialize());
