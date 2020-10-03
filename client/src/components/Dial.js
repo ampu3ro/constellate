@@ -6,7 +6,6 @@ import * as actions from '../actions';
 import axios from 'axios';
 import { withRouter } from 'react-router';
 
-import { withStyles } from '@material-ui/core/styles';
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,33 +16,16 @@ import PublicIcon from '@material-ui/icons/Public';
 
 import { CircularProgress } from '@material-ui/core';
 
-const dialStyles = (theme) => ({
-  root: {
-    transform: 'translateZ(0px)',
-    flexGrow: 1,
-  },
-  wrapper: {
-    position: 'absolute',
-    top: theme.spacing(2),
-    right: theme.spacing(2),
-    height: 380,
-  },
-  modal: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
 class Dial extends Component {
-  state = { open: false, loading: false, success: false, form: false };
-
-  componentDidMount() {
-    this.props.fetchCurrentUser();
-  }
+  state = {
+    open: false,
+    loading: false,
+    success: false,
+    form: false,
+  };
 
   render() {
-    const { currentUser, classes, history } = this.props;
+    const { currentUser, history, TransitionProps } = this.props;
 
     if (currentUser === null) return <div></div>;
 
@@ -65,52 +47,47 @@ class Dial extends Component {
     };
 
     return (
-      <div className={classes.root}>
-        <div className={classes.wrapper}>
-          <SpeedDial
-            ariaLabel="Spotify Speed Dial"
-            icon={
-              <SpeedDialIcon
-                icon={
-                  <FontAwesomeIcon icon={faSpotify} size="2x" color="white" />
-                }
-              />
+      <SpeedDial
+        ariaLabel="Spotify Speed Dial"
+        icon={
+          <SpeedDialIcon
+            icon={<FontAwesomeIcon icon={faSpotify} size="2x" color="white" />}
+          />
+        }
+        onClose={() => this.setState({ open: false })}
+        onOpen={() => this.setState({ open: true })}
+        open={this.state.open}
+        direction="down"
+        TransitionProps={TransitionProps}
+      >
+        <SpeedDialAction
+          key="account"
+          icon={<AccountCircleIcon />}
+          tooltipTitle={currentUser ? 'Log out' : 'Log in'}
+          FabProps={{
+            href: currentUser ? '/api/logout' : '/auth/spotify',
+          }}
+        />
+        {currentUser && (
+          <SpeedDialAction
+            key="public"
+            icon={<PublicIcon />}
+            tooltipTitle={
+              'Make artist data ' +
+              (currentUser.isPublic ? 'private' : 'public')
             }
-            onClose={() => this.setState({ open: false })}
-            onOpen={() => this.setState({ open: true })}
-            open={this.state.open}
-            direction="down"
-          >
-            <SpeedDialAction
-              key="account"
-              icon={<AccountCircleIcon />}
-              tooltipTitle={currentUser ? 'Log out' : 'Log in'}
-              FabProps={{ href: currentUser ? '/api/logout' : '/auth/spotify' }}
-            />
-            {currentUser && (
-              <SpeedDialAction
-                key="public"
-                icon={<PublicIcon />}
-                tooltipTitle={
-                  'Make artist data ' +
-                  (currentUser.isPublic ? 'private' : 'public')
-                }
-                onClick={handlePublic}
-              />
-            )}
-            {currentUser && !this.state.success && (
-              <SpeedDialAction
-                key="update"
-                icon={
-                  this.state.loading ? <CircularProgress /> : <UpdateIcon />
-                }
-                tooltipTitle="Get/update data"
-                onClick={handleUpdate}
-              />
-            )}
-          </SpeedDial>
-        </div>
-      </div>
+            onClick={handlePublic}
+          />
+        )}
+        {currentUser && !this.state.success && (
+          <SpeedDialAction
+            key="update"
+            icon={this.state.loading ? <CircularProgress /> : <UpdateIcon />}
+            tooltipTitle="Get/update data"
+            onClick={handleUpdate}
+          />
+        )}
+      </SpeedDial>
     );
   }
 }
@@ -119,7 +96,4 @@ function mapStateToProps({ currentUser, form }) {
   return { currentUser, form };
 }
 
-export default connect(
-  mapStateToProps,
-  actions
-)(withStyles(dialStyles)(withRouter(Dial)));
+export default connect(mapStateToProps, actions)(withRouter(Dial));
