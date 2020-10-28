@@ -1,7 +1,8 @@
 import React from 'react';
-import { Typography } from '@material-ui/core';
+import { IconButton, Typography } from '@material-ui/core';
 import Dial from './Dial';
 
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Landing = ({ TransitionProps }) => {
+const Landing = ({ TransitionProps, onHelpClick }) => {
   const classes = useStyles();
 
   return (
@@ -28,6 +29,13 @@ const Landing = ({ TransitionProps }) => {
         <Typography variant="h2">Constellate</Typography>
         <Typography variant="subtitle1">
           Visualize the constellation of artists you listen to on Spotify
+          <IconButton
+            size="small"
+            style={{ marginLeft: 5, marginBottom: 10 }}
+            onClick={onHelpClick}
+          >
+            <HelpOutlineIcon fontSize="small" />
+          </IconButton>
         </Typography>
       </div>
       <div className={classes.dial}>

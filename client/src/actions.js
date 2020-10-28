@@ -14,3 +14,5 @@ export const fetchArtists = (values) => async (dispatch) => {
   const res = await axios.post('/api/artists', values);
   dispatch({ type: 'artists', payload: res.data });
 };
+
+export const setHelpOpen = (open) => ({ type: 'help', payload: open });

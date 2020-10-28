@@ -4,74 +4,49 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 
 import Landing from './Landing';
+import Help from './Help';
 import Artists from './Artists';
 
-import {
-  Container,
-  CssBaseline,
-  Modal,
-  Fade,
-  Backdrop,
-  Typography,
-} from '@material-ui/core';
+import { Container, CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import spotifyTheme from '../theme';
 
 class App extends Component {
-  state = { open: false, in: false };
+  state = { in: false };
 
   componentDidMount() {
     this.props.fetchCurrentUser().then(() => {
       const { currentUser } = this.props;
-      this.setState({
-        open: !currentUser,
-        in: !!currentUser,
-      });
+      this.props.setHelpOpen(!currentUser);
+      this.setState({ in: !!currentUser });
     });
   }
 
   render() {
     const timeout = 1000;
 
+    const onClose = () => {
+      this.props.setHelpOpen(false);
+      this.setState({ in: true });
+    };
+
     return (
       <div>
         <ThemeProvider theme={spotifyTheme}>
           <CssBaseline>
-            <Modal
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-              open={this.state.open}
-              onClose={() => this.setState({ open: false, in: true })}
-              closeAfterTransition
-              BackdropComponent={Backdrop}
-              BackdropProps={{ timeout }}
-            >
-              <Fade in={this.state.open} timeout={{ enter: timeout, exit: 0 }}>
-                <Container style={{ outline: 'none' }}>
-                  <Typography>
-                    Constellate is an interactive visualization of the artists
-                    you listen to most on Spotify. Once you connect to your
-                    account and update your data, you will see a network graph
-                    linking artists that are similar (according to Spotify's
-                    analysis). This visual representation highlights clusters or
-                    "constellations", which can be compared to those of other
-                    users that make their data public. Ideally, it will help you
-                    gain a better understanding of the types of music you and
-                    your friends listen to, and eventually leads to discovery of
-                    new artists and sounds!
-                  </Typography>
-                </Container>
-              </Fade>
-            </Modal>
-
+            <Help
+              open={this.props.helpOpen}
+              onClose={onClose}
+              timeout={timeout}
+            />
             <Container>
               <BrowserRouter>
                 <div>
                   <Route exact path="/">
-                    <Landing TransitionProps={{ in: this.state.in, timeout }} />
+                    <Landing
+                      TransitionProps={{ in: this.state.in, timeout }}
+                      onHelpClick={() => this.props.setHelpOpen(true)}
+                    />
                   </Route>
                   <Artists />
                 </div>
@@ -84,8 +59,8 @@ class App extends Component {
   }
 }
 
-function mapStateToProps({ currentUser }) {
-  return { currentUser };
+function mapStateToProps({ currentUser, helpOpen }) {
+  return { currentUser, helpOpen };
 }
 
 export default connect(mapStateToProps, actions)(App);
