@@ -10,7 +10,7 @@ const styles = {
   transition: 500,
 };
 
-const Graphs = ({ data, charge, showBar, color }) => {
+const Graphs = ({ data, showBar, color, charge, distance }) => {
   const wrapperRef = useRef();
   const dims = useResizeObserver(wrapperRef);
 
@@ -51,7 +51,7 @@ const Graphs = ({ data, charge, showBar, color }) => {
         d3
           .forceLink()
           .id((d) => d.id)
-          .distance(100)
+          .distance(distance || 150)
       )
       .on('tick', ticked);
 
