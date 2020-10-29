@@ -4,17 +4,28 @@ import {
   Modal,
   Fade,
   Backdrop,
-  Container,
+  Paper,
   Typography,
   Link,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  paper: {
+    width: '60%',
+    outline: 'none',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  typography: {
+    margin: theme.spacing(5),
   },
 }));
 
@@ -31,8 +42,8 @@ const Help = ({ open, onClose, timeout }) => {
       BackdropProps={{ timeout }}
     >
       <Fade in={open} timeout={{ enter: timeout, exit: 0 }}>
-        <Container style={{ outline: 'none' }}>
-          <Typography>
+        <Paper className={classes.paper}>
+          <Typography className={classes.typography}>
             <p>
               Constellate is an interactive visualization of the artists you
               listen to most on Spotify. Once you connect to your account and
@@ -54,7 +65,7 @@ const Help = ({ open, onClose, timeout }) => {
               to, and even discover new artists and sounds!
             </p>
           </Typography>
-        </Container>
+        </Paper>
       </Fade>
     </Modal>
   );
