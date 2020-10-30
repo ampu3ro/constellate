@@ -1,0 +1,3 @@
+npm install --save passport passport-spotify mongoose cookie-session nodemon concurrently lodash body-parser path-parser
+
+npm install --save http-proxy-middleware materialize-css redux react-redux react-router-dom axios redux-thunk redux-form

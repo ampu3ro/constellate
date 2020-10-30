@@ -10,6 +10,8 @@ module.exports = (app) => {
         'playlist-read-private',
         'playlist-read-collaborative',
         'user-top-read',
+        'streaming',
+        'user-read-private',
       ],
       showDialog: true,
     })

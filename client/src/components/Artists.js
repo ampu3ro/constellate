@@ -15,7 +15,7 @@ import ArtistsForm from './forms/ArtistsForm';
 import Graphs from './Graphs';
 import formatNetwork from '../utils/formatNetwork';
 import * as d3 from 'd3';
-// import data from '../utils/demoNetwork';
+import Player from './Player';
 
 const palette = ['#fff', ...d3.schemeCategory10];
 
@@ -95,6 +95,7 @@ class Artists extends Component {
           </Grid>
         )}
         <Graphs data={network} showBar={this.state.showBar} color={color} />
+        <Player />
       </div>
     );
   }

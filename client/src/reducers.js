@@ -10,5 +10,7 @@ export default combineReducers({
     action.type === 'artists' ? action.payload || false : state,
   helpOpen: (state = false, action) =>
     action.type === 'help' ? action.payload : state,
+  playerState: (state = null, action) =>
+    action.type === 'player' ? action.payload : state,
   form: formReducer,
 });
