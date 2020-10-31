@@ -49,11 +49,12 @@ class Player extends Component {
   state = { ready: false };
 
   componentDidMount() {
-    const { currentUser } = this.props;
+    const { currentUser, userActive } = this.props;
 
-    if (window.Spotify === null || !currentUser) return;
+    if (window.Spotify === null || !currentUser || !userActive) return;
 
     const { accessToken } = currentUser;
+
     // https://developer.spotify.com/documentation/web-playback-sdk/quick-start/
 
     this.player = new window.Spotify.Player({
@@ -157,8 +158,8 @@ class Player extends Component {
   }
 }
 
-function mapStateToProps({ currentUser, playerState }) {
-  return { currentUser, playerState };
+function mapStateToProps({ currentUser, userActive, playerState }) {
+  return { currentUser, userActive, playerState };
 }
 
 export default connect(mapStateToProps, { changePlayerState })(

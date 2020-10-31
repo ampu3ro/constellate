@@ -30,6 +30,7 @@ app.use(passport.session());
 require('./routes/authRoutes')(app);
 require('./routes/artistsRoutes')(app);
 require('./routes/userRoutes')(app);
+require('./routes/spotifyRoutes')(app);
 
 if (process.env.NODE_ENV == 'production') {
   app.use(express.static('client/build'));

@@ -5,6 +5,11 @@ export const fetchCurrentUser = () => async (dispatch) => {
   dispatch({ type: 'current_user', payload: res.data });
 };
 
+export const fetchActiveUser = () => async (dispatch) => {
+  const res = await axios.get('/api/spotify/user');
+  dispatch({ type: 'active_user', payload: res.data });
+};
+
 export const fetchPublicUsers = () => async (dispatch) => {
   const res = await axios.get('/api/public_users');
   dispatch({ type: 'public_users', payload: res.data });

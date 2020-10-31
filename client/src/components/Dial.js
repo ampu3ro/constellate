@@ -24,14 +24,18 @@ class Dial extends Component {
     form: false,
   };
 
+  componentDidMount() {
+    this.props.fetchActiveUser();
+  }
+
   render() {
-    const { currentUser, history, TransitionProps } = this.props;
+    const { currentUser, userActive, history, TransitionProps } = this.props;
 
     if (currentUser === null) return <div></div>;
 
     const handleUpdate = async () => {
       this.setState({ loading: true, success: false });
-      await axios.get('/api/spotify');
+      await axios.get('/api/spotify/artists');
       history.push('/');
       this.setState({ loading: false, success: true });
     };
@@ -63,9 +67,9 @@ class Dial extends Component {
         <SpeedDialAction
           key="account"
           icon={<AccountCircleIcon />}
-          tooltipTitle={currentUser ? 'Log out' : 'Log in'}
+          tooltipTitle={userActive ? 'Log out' : 'Log in'}
           FabProps={{
-            href: currentUser ? '/api/logout' : '/auth/spotify',
+            href: userActive ? '/api/logout' : '/auth/spotify',
           }}
         />
         {currentUser && (
@@ -92,8 +96,8 @@ class Dial extends Component {
   }
 }
 
-function mapStateToProps({ currentUser, form }) {
-  return { currentUser, form };
+function mapStateToProps({ currentUser, userActive, form }) {
+  return { currentUser, userActive, form };
 }
 
 export default connect(mapStateToProps, actions)(withRouter(Dial));

@@ -28,6 +28,7 @@
     "mongoose": "^5.9.22",
     "nodemon": "^2.0.4",
     "passport": "^0.4.1",
+    "passport-oauth2-refresh": "^2.0.0",
     "passport-spotify": "^1.1.0",
     "path-parser": "^6.1.0"
   }
