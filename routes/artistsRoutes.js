@@ -14,8 +14,6 @@ module.exports = (app) => {
 
     users = users.map((user) => {
       artistIds = [
-        ...user.savedArtistIds,
-        ...user.playlistArtistIds,
         ...user.shortArtistIds,
         ...user.mediumArtistIds,
         ...user.longArtistIds,

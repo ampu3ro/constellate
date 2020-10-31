@@ -83,7 +83,7 @@ class Dial extends Component {
             onClick={handlePublic}
           />
         )}
-        {currentUser && !this.state.success && (
+        {userActive && !this.state.success && (
           <SpeedDialAction
             key="update"
             icon={this.state.loading ? <CircularProgress /> : <UpdateIcon />}

@@ -22,7 +22,9 @@ export const fetchArtists = (values) => async (dispatch) => {
 
 export const setHelpOpen = (open) => ({ type: 'help', payload: open });
 
+export const storePlayer = (player) => ({ type: 'player', payload: player });
+
 export const changePlayerState = (state) => ({
-  type: 'player',
+  type: 'player_state',
   payload: state,
 });

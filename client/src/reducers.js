@@ -12,7 +12,9 @@ export default combineReducers({
     action.type === 'active_user' ? !action.payload.error : state,
   helpOpen: (state = false, action) =>
     action.type === 'help' ? action.payload : state,
-  playerState: (state = null, action) =>
+  player: (state = null, action) =>
     action.type === 'player' ? action.payload : state,
+  playerState: (state = null, action) =>
+    action.type === 'player_state' ? action.payload : state,
   form: formReducer,
 });

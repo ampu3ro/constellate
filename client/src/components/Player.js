@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { changePlayerState } from '../actions';
+import * as actions from '../actions';
 import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
@@ -51,40 +51,40 @@ class Player extends Component {
   componentDidMount() {
     const { currentUser, userActive } = this.props;
 
-    if (window.Spotify === null || !currentUser || !userActive) return;
+    if (window.Spotify === null || !userActive) return;
 
     const { accessToken } = currentUser;
 
     // https://developer.spotify.com/documentation/web-playback-sdk/quick-start/
 
-    this.player = new window.Spotify.Player({
+    const player = new window.Spotify.Player({
       name: 'Constellate Web App',
       getOAuthToken: (cb) => {
         cb(accessToken);
       },
     });
 
-    this.player.addListener('initialization_error', ({ message }) => {
+    player.addListener('initialization_error', ({ message }) => {
       console.error(message);
     });
-    this.player.addListener('authentication_error', ({ message }) => {
+    player.addListener('authentication_error', ({ message }) => {
       console.error(message);
     });
-    this.player.addListener('account_error', ({ message }) => {
+    player.addListener('account_error', ({ message }) => {
       console.error(message);
     });
-    this.player.addListener('playback_error', ({ message }) => {
+    player.addListener('playback_error', ({ message }) => {
       console.error(message);
     });
 
-    this.player.addListener('player_state_changed', (state) =>
+    player.addListener('player_state_changed', (state) =>
       this.props.changePlayerState(state)
     );
 
-    this.player.addListener('ready', async ({ device_id }) => {
+    player.addListener('ready', async ({ device_id }) => {
       await axios.put(
         'https://api.spotify.com/v1/me/player',
-        { device_ids: [device_id], play: true },
+        { device_ids: [device_id], play: false },
         { headers: { Authorization: `Bearer ${accessToken}` } }
       );
 
@@ -92,15 +92,17 @@ class Player extends Component {
       console.log('Connected with Device ID', device_id);
     });
 
-    this.player.addListener('not_ready', ({ device_id }) => {
+    player.addListener('not_ready', ({ device_id }) => {
       console.log('Device ID has gone offline', device_id);
     });
 
-    this.player.connect();
+    player.connect();
+
+    this.props.storePlayer(player);
   }
 
   render() {
-    const { classes, playerState } = this.props;
+    const { classes, player, playerState } = this.props;
     const { ready } = this.state;
 
     if (!ready || playerState === null) {
@@ -131,13 +133,13 @@ class Player extends Component {
           <div className={classes.controls}>
             <IconButton
               aria-label="previous"
-              onClick={() => this.player.previousTrack()}
+              onClick={() => player.previousTrack()}
             >
               <SkipPreviousIcon />
             </IconButton>
             <IconButton
               aria-label="play/pause"
-              onClick={() => this.player.togglePlay()}
+              onClick={() => player.togglePlay()}
             >
               {paused ? (
                 <PlayArrowIcon className={classes.playIcon} />
@@ -145,10 +147,7 @@ class Player extends Component {
                 <PauseIcon className={classes.playIcon} />
               )}
             </IconButton>
-            <IconButton
-              aria-label="next"
-              onClick={() => this.player.nextTrack()}
-            >
+            <IconButton aria-label="next" onClick={() => player.nextTrack()}>
               <SkipNextIcon />
             </IconButton>
           </div>
@@ -158,10 +157,8 @@ class Player extends Component {
   }
 }
 
-function mapStateToProps({ currentUser, userActive, playerState }) {
-  return { currentUser, userActive, playerState };
+function mapStateToProps({ currentUser, userActive, player, playerState }) {
+  return { currentUser, userActive, player, playerState };
 }
 
-export default connect(mapStateToProps, { changePlayerState })(
-  withStyles(styles)(Player)
-);
+export default connect(mapStateToProps, actions)(withStyles(styles)(Player));

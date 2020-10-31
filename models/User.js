@@ -7,8 +7,6 @@ const userSchema = new Schema({
   email: String,
   photo: String,
   isPublic: Boolean,
-  savedArtistIds: [String],
-  playlistArtistIds: [String],
   shortArtistIds: [String],
   mediumArtistIds: [String],
   longArtistIds: [String],
