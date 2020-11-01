@@ -15,14 +15,17 @@ export const fetchPublicUsers = () => async (dispatch) => {
   dispatch({ type: 'public_users', payload: res.data });
 };
 
-export const fetchArtists = (values) => async (dispatch) => {
-  const res = await axios.post('/api/artists', values);
+export const fetchArtists = (spotifyIds) => async (dispatch) => {
+  const res = await axios.post('/api/artists', spotifyIds);
   dispatch({ type: 'artists', payload: res.data });
 };
 
 export const setHelpOpen = (open) => ({ type: 'help', payload: open });
 
-export const storePlayer = (player) => ({ type: 'player', payload: player });
+export const setDeviceId = (deviceId) => ({
+  type: 'device_id',
+  payload: deviceId,
+});
 
 export const changePlayerState = (state) => ({
   type: 'player_state',

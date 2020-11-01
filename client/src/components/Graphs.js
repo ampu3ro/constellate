@@ -1,6 +1,8 @@
 import React, { useRef, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import * as d3 from 'd3';
 import useResizeObserver from '../utils/useResizeObserver';
+import axios from 'axios';
 
 const styles = {
   link: { stroke: '#999', alpha: 0.1 },
@@ -26,6 +28,8 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
   const barRef = useRef();
   const yLabelRef = useRef();
   const legendRef = useRef();
+
+  const deviceId = useSelector(({ deviceId }) => deviceId);
 
   const effect = () => {
     if (!dims || !data) return;
@@ -117,6 +121,7 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
       .style('fill', color(layerIds[0]))
       .on('mouseover', mouseOver)
       .on('mouseout', mouseOut)
+      .on('click', click)
       .call(drag());
 
     simulation.nodes(nodes).force('link').links(links);
@@ -244,6 +249,10 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
         .attr('r', styles.node.r);
 
       updateBar(layers, showBar);
+    }
+
+    function click(d) {
+      axios.put('/api/spotify/play', { deviceId, artistId: d.id });
     }
 
     function updateBar(layers, showBar) {

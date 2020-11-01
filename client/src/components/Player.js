@@ -46,66 +46,56 @@ const styles = (theme) => ({
 });
 
 class Player extends Component {
-  state = { ready: false };
-
   componentDidMount() {
-    const { currentUser, userActive } = this.props;
+    const { userActive } = this.props;
 
     if (window.Spotify === null || !userActive) return;
 
-    const { accessToken } = currentUser;
+    const { accessToken } = this.props.currentUser;
 
     // https://developer.spotify.com/documentation/web-playback-sdk/quick-start/
 
-    const player = new window.Spotify.Player({
+    this.player = new window.Spotify.Player({
       name: 'Constellate Web App',
       getOAuthToken: (cb) => {
         cb(accessToken);
       },
     });
 
-    player.addListener('initialization_error', ({ message }) => {
+    this.player.addListener('initialization_error', ({ message }) => {
       console.error(message);
     });
-    player.addListener('authentication_error', ({ message }) => {
+    this.player.addListener('authentication_error', ({ message }) => {
       console.error(message);
     });
-    player.addListener('account_error', ({ message }) => {
+    this.player.addListener('account_error', ({ message }) => {
       console.error(message);
     });
-    player.addListener('playback_error', ({ message }) => {
+    this.player.addListener('playback_error', ({ message }) => {
       console.error(message);
     });
 
-    player.addListener('player_state_changed', (state) =>
-      this.props.changePlayerState(state)
-    );
-
-    player.addListener('ready', async ({ device_id }) => {
-      await axios.put(
-        'https://api.spotify.com/v1/me/player',
-        { device_ids: [device_id], play: false },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
-
-      this.setState({ ready: true });
-      console.log('Connected with Device ID', device_id);
+    this.player.addListener('player_state_changed', (state) => {
+      this.props.changePlayerState(state);
     });
 
-    player.addListener('not_ready', ({ device_id }) => {
+    this.player.addListener('ready', ({ device_id }) => {
+      axios.put('/api/spotify/player', { deviceId: device_id });
+    });
+
+    this.player.addListener('not_ready', ({ device_id }) => {
       console.log('Device ID has gone offline', device_id);
     });
 
-    player.connect();
+    this.player.connect();
 
-    this.props.storePlayer(player);
+    this.props.setDeviceId(this.player._options.id);
   }
 
   render() {
-    const { classes, player, playerState } = this.props;
-    const { ready } = this.state;
+    const { classes, deviceId, playerState } = this.props;
 
-    if (!ready || playerState === null) {
+    if (deviceId === '' || playerState === null) {
       return <div></div>;
     }
 
@@ -133,13 +123,13 @@ class Player extends Component {
           <div className={classes.controls}>
             <IconButton
               aria-label="previous"
-              onClick={() => player.previousTrack()}
+              onClick={() => this.player.previousTrack()}
             >
               <SkipPreviousIcon />
             </IconButton>
             <IconButton
               aria-label="play/pause"
-              onClick={() => player.togglePlay()}
+              onClick={() => this.player.togglePlay()}
             >
               {paused ? (
                 <PlayArrowIcon className={classes.playIcon} />
@@ -147,7 +137,10 @@ class Player extends Component {
                 <PauseIcon className={classes.playIcon} />
               )}
             </IconButton>
-            <IconButton aria-label="next" onClick={() => player.nextTrack()}>
+            <IconButton
+              aria-label="next"
+              onClick={() => this.player.nextTrack()}
+            >
               <SkipNextIcon />
             </IconButton>
           </div>
@@ -157,8 +150,8 @@ class Player extends Component {
   }
 }
 
-function mapStateToProps({ currentUser, userActive, player, playerState }) {
-  return { currentUser, userActive, player, playerState };
+function mapStateToProps({ currentUser, userActive, deviceId, playerState }) {
+  return { currentUser, userActive, deviceId, playerState };
 }
 
 export default connect(mapStateToProps, actions)(withStyles(styles)(Player));

@@ -67,7 +67,9 @@ class Dial extends Component {
         <SpeedDialAction
           key="account"
           icon={<AccountCircleIcon />}
-          tooltipTitle={userActive ? 'Log out' : 'Log in'}
+          tooltipTitle={
+            userActive ? 'Log out' : currentUser ? 'Reconnect' : 'Log in'
+          }
           FabProps={{
             href: userActive ? '/api/logout' : '/auth/spotify',
           }}

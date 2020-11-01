@@ -1,21 +1,18 @@
 const passport = require('passport');
 
-const scope = [
-  'user-read-email',
-  'user-read-private',
-  'user-top-read',
-  'streaming',
-];
-
 module.exports = (app) => {
   app.get(
     '/auth/spotify',
-    passport.authenticate('spotify', { scope, showDialog: true })
-  );
-
-  app.get(
-    '/auth/spotify/reconnect',
-    passport.authenticate('spotify', { scope, showDialog: false })
+    passport.authenticate('spotify', {
+      scope: [
+        'user-read-email',
+        'user-read-private',
+        'user-top-read',
+        'streaming',
+        'user-modify-playback-state',
+      ],
+      showDialog: true,
+    })
   );
 
   app.get(

@@ -6,27 +6,24 @@ const User = mongoose.model('users');
 const Artist = mongoose.model('artists');
 
 const api = 'https://api.spotify.com/v1';
+const configAuth = (token) => {
+  return {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+};
 
 module.exports = (app) => {
   app.get('/api/spotify/user', requireLogin, (req, res) => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${req.user.accessToken}`,
-      },
-    };
-
     axios
-      .get(`${api}/me`, config)
+      .get(`${api}/me`, configAuth(req.user.accessToken))
       .then((response) => res.send(response.data))
       .catch((err) => res.send(err.response.data));
   });
 
   app.get('/api/spotify/artists', requireLogin, async (req, res) => {
-    const config = {
-      headers: {
-        Authorization: `Bearer ${req.user.accessToken}`,
-      },
-    };
+    const config = configAuth(req.user.accessToken);
 
     let url, response, items, ids;
 
@@ -102,5 +99,26 @@ module.exports = (app) => {
     }
 
     res.send('Spotify query complete, artist data updated and stored!');
+  });
+
+  app.put('/api/spotify/player', requireLogin, (req, res) => {
+    axios
+      .put(
+        `${api}/me/player`,
+        { device_ids: [req.body.deviceId], play: false },
+        configAuth(req.user.accessToken)
+      )
+      .then(() => console.log('New Spotify player', req.body.deviceId))
+      .catch((err) => res.send(err.response.data));
+  });
+
+  app.put('/api/spotify/play', requireLogin, (req, res) => {
+    axios
+      .put(
+        `${api}/me/player/play?device_id=${req.body.deviceId}`,
+        { context_uri: `spotify:artist:${req.body.artistId}` },
+        configAuth(req.user.accessToken)
+      )
+      .catch((err) => res.send(err.response.data));
   });
 };
