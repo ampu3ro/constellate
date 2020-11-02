@@ -348,7 +348,7 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
 
   return (
     <div ref={wrapperRef}>
-      <svg ref={svgRef} width="100%" height={'100vh'}>
+      <svg ref={svgRef} width="100%" height={'75vh'}>
         <g ref={networkRef}>
           <g ref={linkRef} />
           <g ref={layerRef} />

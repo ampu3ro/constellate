@@ -28,7 +28,7 @@ const Landing = ({ TransitionProps, onHelpClick }) => {
       <div className={classes.header}>
         <Typography variant="h2">Constellate</Typography>
         <Typography variant="subtitle1">
-          Visualize the constellation of artists you listen to on Spotify
+          Explore the constellation of artists you listen to on Spotify
           <IconButton
             size="small"
             style={{ marginLeft: 5, marginBottom: 10 }}

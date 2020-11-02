@@ -59,10 +59,15 @@ const Help = ({ open, onClose, timeout }) => {
             </p>
             <p>
               This visual representation highlights clusters or
-              "constellations", which can be compared to those of other users
-              that make their data public. It can help you gain a better
-              understanding of the types of music you and your friends listen
-              to, and even discover new artists and sounds!
+              "constellations", which can also be compared to those of other
+              users that make their data public. It can help you gain a better
+              understanding of the types of music you listen to, and where there
+              are similarities with your friends' preferences.
+            </p>
+            <p>
+              Click on a node/star to play top songs from that artist and
+              discover music others listen to. Scroll to zoom in and out of the
+              star map and drag to pan.
             </p>
           </Typography>
         </Paper>
