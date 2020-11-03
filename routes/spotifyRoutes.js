@@ -26,15 +26,7 @@ module.exports = (app) => {
     const config = configAuth(req.user.accessToken);
 
     let url, response, items, ids;
-
     let artists = [];
-    ids = [...savedArtistIds, ...playlistArtistIds]; //copy for splice
-    while (ids.length) {
-      url = `${api}/artists?ids=${ids.splice(0, 50).toString()}`;
-      response = await axios.get(url, config);
-
-      artists.push(...response.data.artists);
-    }
 
     let topArtists = { short: [], medium: [], long: [] };
     for (term in topArtists) {
@@ -68,8 +60,6 @@ module.exports = (app) => {
       { _id: req.user.id },
       {
         $set: {
-          savedArtistIds,
-          playlistArtistIds,
           shortArtistIds: topArtists.short.map(({ id }) => id),
           mediumArtistIds: topArtists.medium.map(({ id }) => id),
           longArtistIds: topArtists.long.map(({ id }) => id),
