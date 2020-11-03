@@ -94,7 +94,12 @@ class Artists extends Component {
             </Grid>
           </Grid>
         )}
-        <Graphs data={network} showBar={this.state.showBar} color={color} />
+        <Graphs
+          data={network}
+          key={filter}
+          showBar={this.state.showBar}
+          color={color}
+        />
         <Player />
       </div>
     );
