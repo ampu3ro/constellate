@@ -59,7 +59,7 @@ class UsersForm extends Component {
               />
             ));
           }}
-          style={{ width: 500 }}
+          fullWidth
         />
       </div>
     );

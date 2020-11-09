@@ -29,9 +29,10 @@ class Artists extends Component {
 
   render() {
     let artists = this.props.artists;
-    if (!artists.length) return <div></div>;
-
     const { currentUser, form } = this.props;
+
+    if (!artists.length || currentUser === null) return <div></div>;
+
     const others = form?.usersForm?.values?.users || [];
     const filter = form?.artistsForm?.values?.filter || '';
     const tag = `${filter}ArtistIds`;
@@ -72,13 +73,13 @@ class Artists extends Component {
         </FormControl>
         {this.state.showToggles && (
           <Grid container spacing={2} style={{ marginTop: 20 }}>
-            <Grid item xs>
+            <Grid item xs={12} lg={6}>
               <UsersForm color={color} />
             </Grid>
-            <Grid item xs>
+            <Grid item xs={12} lg={4}>
               <ArtistsForm />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={12} lg={2}>
               <FormControlLabel
                 control={
                   <Checkbox
