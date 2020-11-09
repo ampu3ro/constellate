@@ -19,8 +19,6 @@ import SkipNextIcon from '@material-ui/icons/SkipNext';
 const styles = (theme) => ({
   root: {
     display: 'flex',
-    width: 'auto',
-    margin: theme.spacing(5),
   },
   cover: {
     width: 151,

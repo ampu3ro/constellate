@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton, Typography } from '@material-ui/core';
+import { Grid, IconButton, Typography } from '@material-ui/core';
 import Dial from './Dial';
 
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
@@ -25,19 +25,21 @@ const Landing = ({ TransitionProps, onHelpClick }) => {
 
   return (
     <div className={classes.wrapper}>
-      <div className={classes.header}>
-        <Typography variant="h2">Constellate</Typography>
-        <Typography variant="subtitle1">
-          Explore the constellation of artists you listen to on Spotify
-          <IconButton
-            size="small"
-            style={{ marginLeft: 5, marginBottom: 10 }}
-            onClick={onHelpClick}
-          >
-            <HelpOutlineIcon fontSize="small" />
-          </IconButton>
-        </Typography>
-      </div>
+      <Grid container className={classes.header}>
+        <Grid item xs={9}>
+          <Typography variant="h2">Constellate</Typography>
+          <Typography variant="subtitle1">
+            Explore the constellation of artists you listen to on Spotify
+            <IconButton
+              size="small"
+              style={{ marginLeft: 5, marginBottom: 10 }}
+              onClick={onHelpClick}
+            >
+              <HelpOutlineIcon fontSize="small" />
+            </IconButton>
+          </Typography>
+        </Grid>
+      </Grid>
       <div className={classes.dial}>
         <Dial TransitionProps={TransitionProps} />
       </div>
