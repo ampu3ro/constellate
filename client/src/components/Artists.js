@@ -16,6 +16,7 @@ import Graphs from './Graphs';
 import formatNetwork from '../utils/formatNetwork';
 import * as d3 from 'd3';
 import Player from './Player';
+import Similar from './Similar';
 
 const palette = ['#fff', ...d3.schemeCategory10];
 
@@ -101,6 +102,7 @@ class Artists extends Component {
           showBar={this.state.showBar}
           color={color}
         />
+        <Similar />
         <Player />
       </div>
     );

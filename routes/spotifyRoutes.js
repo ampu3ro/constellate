@@ -25,7 +25,7 @@ module.exports = (app) => {
   app.get('/api/spotify/artists', requireLogin, async (req, res) => {
     const config = configAuth(req.user.accessToken);
 
-    let url, response, items, ids;
+    let url, response, items;
     let artists = [];
 
     let topArtists = { short: [], medium: [], long: [] };
@@ -91,6 +91,26 @@ module.exports = (app) => {
     res.send('Spotify query complete, artist data updated and stored!');
   });
 
+  app.get('/api/spotify/artist', requireLogin, (req, res) => {
+    axios
+      .get(
+        `${api}/artists/${req.query.artistId}`,
+        configAuth(req.user.accessToken)
+      )
+      .then((response) => res.send(response.data))
+      .catch((err) => res.send(err.response.data));
+  });
+
+  app.get('/api/spotify/similar', requireLogin, (req, res) => {
+    axios
+      .get(
+        `${api}/artists/${req.query.artistId}/related-artists`,
+        configAuth(req.user.accessToken)
+      )
+      .then((response) => res.send(response.data.artists))
+      .catch((err) => res.send(err.response.data));
+  });
+
   app.put('/api/spotify/player', requireLogin, (req, res) => {
     axios
       .put(
@@ -98,7 +118,6 @@ module.exports = (app) => {
         { device_ids: [req.body.deviceId], play: false },
         configAuth(req.user.accessToken)
       )
-      .then(() => console.log('New Spotify player', req.body.deviceId))
       .catch((err) => res.send(err.response.data));
   });
 

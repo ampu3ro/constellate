@@ -31,3 +31,22 @@ export const changePlayerState = (state) => ({
   type: 'player_state',
   payload: state,
 });
+
+export const getArtist = async (artistId) => {
+  const selected = await axios.get('/api/spotify/artist', {
+    params: { artistId },
+  });
+  return { type: 'selected', payload: selected.data };
+};
+
+export const getSimilar = async (artistId) => {
+  const selected = await axios.get('/api/spotify/similar', {
+    params: { artistId },
+  });
+  return { type: 'similar', payload: selected.data };
+};
+
+export const updatePlayer = (artistId, deviceId) => {
+  axios.put('/api/spotify/play', { artistId, deviceId });
+  return { type: 'play' };
+};

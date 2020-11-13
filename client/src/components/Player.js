@@ -78,7 +78,9 @@ class Player extends Component {
     });
 
     this.player.addListener('ready', ({ device_id }) => {
-      axios.put('/api/spotify/player', { deviceId: device_id });
+      axios
+        .put('/api/spotify/player', { deviceId: device_id })
+        .catch((err) => console.log(err.response));
     });
 
     this.player.addListener('not_ready', ({ device_id }) => {
@@ -91,9 +93,9 @@ class Player extends Component {
   }
 
   render() {
-    const { classes, deviceId, playerState } = this.props;
+    const { classes, selectedArtist, playerState } = this.props;
 
-    if (deviceId === '' || playerState === null) {
+    if (selectedArtist === null || playerState === null) {
       return <div></div>;
     }
 
@@ -148,8 +150,13 @@ class Player extends Component {
   }
 }
 
-function mapStateToProps({ currentUser, userActive, deviceId, playerState }) {
-  return { currentUser, userActive, deviceId, playerState };
+function mapStateToProps({
+  currentUser,
+  userActive,
+  selectedArtist,
+  playerState,
+}) {
+  return { currentUser, userActive, selectedArtist, playerState };
 }
 
 export default connect(mapStateToProps, actions)(withStyles(styles)(Player));
