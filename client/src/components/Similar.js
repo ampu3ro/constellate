@@ -8,6 +8,7 @@ import {
   Typography,
   Tooltip,
   Grid,
+  Badge,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -38,11 +39,20 @@ const useStyles = makeStyles((theme) => ({
       transform: 'scale(1.75)',
     },
   },
+  badge: {
+    backgroundColor: '#fff',
+    border: `2px solid ${theme.palette.background.paper}`,
+    minWidth: theme.spacing(2),
+    minHeight: theme.spacing(2),
+    borderRadius: theme.spacing(1),
+  },
 }));
 
 const Similar = () => {
   const classes = useStyles();
+  const currentUser = useSelector(({ currentUser }) => currentUser);
   const userActive = useSelector(({ userActive }) => userActive);
+  const artists = useSelector(({ artists }) => artists);
   const selectedArtist = useSelector(({ selectedArtist }) => selectedArtist);
   const similarArtists = useSelector(({ similarArtists }) => similarArtists);
   const { artistSelected } = useArtistSelected();
@@ -52,6 +62,9 @@ const Similar = () => {
   }
 
   const { name, images } = selectedArtist;
+  const userArtistIds = artists
+    .filter(({ spotifyIds }) => spotifyIds.includes(currentUser.spotifyId))
+    .map(({ artistId }) => artistId);
 
   return (
     <Grid className={classes.root} container direction="column">
@@ -75,7 +88,15 @@ const Similar = () => {
               disableRipple
               disableFocusRipple
             >
-              <Avatar alt={name} src={images.length ? images[0].url : ''} />
+              <Badge
+                classes={{ badge: classes.badge }}
+                variant="dot"
+                invisible={!userArtistIds.includes(id)}
+                overlap="circle"
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+              >
+                <Avatar alt={name} src={images.length ? images[0].url : ''} />
+              </Badge>
             </IconButton>
           </Tooltip>
         ))}

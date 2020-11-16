@@ -102,7 +102,7 @@ class Artists extends Component {
           showBar={this.state.showBar}
           color={color}
         />
-        <Similar />
+        <Similar color={color} />
         <Player />
       </div>
     );

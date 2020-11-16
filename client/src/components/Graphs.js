@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import useResizeObserver from '../utils/useResizeObserver';
-
 import { useArtistSelected } from '../hooks';
 
 const styles = {
