@@ -45,7 +45,7 @@ const styles = (theme) => ({
 
 class Player extends Component {
   componentDidMount() {
-    if (window.Spotify === null) return;
+    if (!window.Spotify || window.Spotify === null) return;
 
     const { accessToken } = this.props.currentUser;
 
