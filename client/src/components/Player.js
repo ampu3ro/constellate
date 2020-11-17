@@ -45,9 +45,7 @@ const styles = (theme) => ({
 
 class Player extends Component {
   componentDidMount() {
-    const { userActive } = this.props;
-
-    if (window.Spotify === null || !userActive) return;
+    if (window.Spotify === null) return;
 
     const { accessToken } = this.props.currentUser;
 
@@ -93,9 +91,9 @@ class Player extends Component {
   }
 
   render() {
-    const { classes, selectedArtist, playerState } = this.props;
+    const { classes, userActive, selectedArtist, playerState } = this.props;
 
-    if (selectedArtist === null || playerState === null) {
+    if (!userActive || selectedArtist === null || playerState === null) {
       return <div></div>;
     }
 

@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-
 import axios from 'axios';
 import { withRouter } from 'react-router';
 
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
@@ -24,8 +21,16 @@ class Dial extends Component {
     form: false,
   };
 
+  tick = () => {
+    this.props.checkActiveUser(this.props.currentUser);
+  };
+
   componentDidMount() {
-    this.props.fetchActiveUser();
+    this.timer = setInterval(this.tick, 5000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   render() {

@@ -5,9 +5,9 @@ export const fetchCurrentUser = () => async (dispatch) => {
   dispatch({ type: 'current_user', payload: res.data });
 };
 
-export const fetchActiveUser = () => async (dispatch) => {
-  const res = await axios.get('/api/spotify/user');
-  dispatch({ type: 'active_user', payload: res.data });
+export const checkActiveUser = (currentUser) => (dispatch) => {
+  const active = Date.parse(currentUser.tokenExpires) >= Date.now();
+  dispatch({ type: 'active_user', payload: active });
 };
 
 export const fetchPublicUsers = () => async (dispatch) => {
@@ -22,6 +22,8 @@ export const fetchArtists = (spotifyIds) => async (dispatch) => {
 
 export const setHelpOpen = (open) => ({ type: 'help', payload: open });
 
+export const setNoteOpen = (open) => ({ type: 'note', payload: open });
+
 export const setDeviceId = (deviceId) => ({
   type: 'device_id',
   payload: deviceId,
@@ -33,20 +35,16 @@ export const changePlayerState = (state) => ({
 });
 
 export const getArtist = async (artistId) => {
-  const selected = await axios.get('/api/spotify/artist', {
-    params: { artistId },
-  });
-  return { type: 'selected', payload: selected.data };
+  const res = await axios.get('/api/spotify/artist', { params: { artistId } });
+  return { type: 'selected', payload: res.data };
 };
 
 export const getSimilar = async (artistId) => {
-  const selected = await axios.get('/api/spotify/similar', {
-    params: { artistId },
-  });
-  return { type: 'similar', payload: selected.data };
+  const res = await axios.get('/api/spotify/similar', { params: { artistId } });
+  return { type: 'similar', payload: res.data };
 };
 
-export const updatePlayer = (artistId, deviceId) => {
-  axios.put('/api/spotify/play', { artistId, deviceId });
+export const updatePlayer = async (artistId, deviceId) => {
+  await axios.put('/api/spotify/play', { artistId, deviceId });
   return { type: 'play' };
 };

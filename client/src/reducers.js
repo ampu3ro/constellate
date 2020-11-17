@@ -13,9 +13,11 @@ export default combineReducers({
   similarArtists: (state = [], action) =>
     action.type === 'similar' ? action.payload : state,
   userActive: (state = false, action) =>
-    action.type === 'active_user' ? !action.payload.error : state,
+    action.type === 'active_user' ? action.payload : state,
   helpOpen: (state = false, action) =>
     action.type === 'help' ? action.payload : state,
+  noteOpen: (state = false, action) =>
+    action.type === 'note' ? action.payload : state,
   deviceId: (state = '', action) =>
     action.type === 'device_id' ? action.payload : state,
   playerState: (state = null, action) =>

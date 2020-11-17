@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
-import * as d3 from 'd3';
 import useResizeObserver from '../utils/useResizeObserver';
 import { useArtistSelected } from '../hooks';
+import * as d3 from 'd3';
 
 const styles = {
   link: { stroke: '#999', alpha: 0.1 },

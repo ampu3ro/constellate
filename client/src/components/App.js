@@ -5,6 +5,7 @@ import * as actions from '../actions';
 
 import Landing from './Landing';
 import Help from './Help';
+import Note from './Note';
 import Artists from './Artists';
 
 import { Container, CssBaseline } from '@material-ui/core';
@@ -39,6 +40,7 @@ class App extends Component {
               onClose={onClose}
               timeout={timeout}
             />
+            <Note />
             <Container>
               <BrowserRouter>
                 <div>
