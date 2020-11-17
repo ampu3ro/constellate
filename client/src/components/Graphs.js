@@ -28,7 +28,12 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
   const yLabelRef = useRef();
   const legendRef = useRef();
 
-  const { artistSelected } = useArtistSelected();
+  // https://stackoverflow.com/questions/61515547/redux-useselector-not-updated-need-to-be-refresh
+  const userRef = useRef();
+  const { userActive, artistSelected } = useArtistSelected();
+  useEffect(() => {
+    userRef.current = userActive;
+  }, [userActive]);
 
   const effect = () => {
     if (!dims || !data) return;
@@ -120,9 +125,7 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
       .style('fill', color(layerIds[0]))
       .on('mouseover', mouseOver)
       .on('mouseout', mouseOut)
-      .on('click', (d) => {
-        artistSelected(d.id);
-      })
+      .on('click', (d) => artistSelected(userRef.current, d.id))
       .call(drag());
 
     simulation.nodes(nodes).force('link').links(links);

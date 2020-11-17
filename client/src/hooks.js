@@ -7,23 +7,20 @@ export const useArtistSelected = () => {
   const userActive = useSelector(({ userActive }) => userActive);
   const deviceId = useSelector(({ deviceId }) => deviceId);
 
-  const callback = async (artistId) => {
-    if (userActive) {
-      const selected = await getArtist(artistId);
-      const similar = await getSimilar(artistId);
-      dispatch(selected);
-      dispatch(similar);
-      updatePlayer(artistId, deviceId);
-    } else {
-      dispatch(setNoteOpen(true));
-    }
-  };
+  const artistSelected = useCallback(
+    async (userActive, artistId) => {
+      if (userActive) {
+        const selected = await getArtist(artistId);
+        const similar = await getSimilar(artistId);
+        dispatch(selected);
+        dispatch(similar);
+        updatePlayer(artistId, deviceId);
+      } else {
+        dispatch(setNoteOpen(true));
+      }
+    },
+    [dispatch, deviceId]
+  );
 
-  const artistSelected = useCallback(callback, [
-    userActive,
-    dispatch,
-    deviceId,
-  ]);
-
-  return { artistSelected };
+  return { userActive, artistSelected };
 };
