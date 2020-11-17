@@ -23,7 +23,7 @@ passport.use(
       callbackURL: '/auth/spotify/callback',
       proxy: true,
     },
-    async (accessToken, refreshToken, profile, done) => {
+    async (accessToken, refreshToken, expires_in, profile, done) => {
       const user = {
         spotifyId: profile.id,
         $set: {
@@ -32,6 +32,7 @@ passport.use(
           photo: profile.photos[0] || '',
           accessToken,
           refreshToken,
+          tokenExpires: Date.now() + expires_in * 1000,
         },
         $setOnInsert: {
           isPublic: false,

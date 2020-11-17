@@ -1,4 +1,5 @@
 const requireLogin = require('../middlewares/requireLogin');
+const requireActive = require('../middlewares/requireActive');
 const axios = require('axios');
 const mongoose = require('mongoose');
 
@@ -22,7 +23,7 @@ module.exports = (app) => {
       .catch((err) => res.send(err.response.data));
   });
 
-  app.get('/api/spotify/artists', requireLogin, async (req, res) => {
+  app.get('/api/spotify/artists', requireActive, async (req, res) => {
     const config = configAuth(req.user.accessToken);
 
     let url, response, items;
@@ -91,7 +92,7 @@ module.exports = (app) => {
     res.send('Spotify query complete, artist data updated and stored!');
   });
 
-  app.get('/api/spotify/artist', requireLogin, (req, res) => {
+  app.get('/api/spotify/artist', requireActive, (req, res) => {
     axios
       .get(
         `${api}/artists/${req.query.artistId}`,
@@ -101,7 +102,7 @@ module.exports = (app) => {
       .catch((err) => res.send(err.response.data));
   });
 
-  app.get('/api/spotify/similar', requireLogin, (req, res) => {
+  app.get('/api/spotify/similar', requireActive, (req, res) => {
     axios
       .get(
         `${api}/artists/${req.query.artistId}/related-artists`,
@@ -111,7 +112,7 @@ module.exports = (app) => {
       .catch((err) => res.send(err.response.data));
   });
 
-  app.put('/api/spotify/player', requireLogin, (req, res) => {
+  app.put('/api/spotify/player', requireActive, (req, res) => {
     axios
       .put(
         `${api}/me/player`,
@@ -121,7 +122,7 @@ module.exports = (app) => {
       .catch((err) => res.send(err.response.data));
   });
 
-  app.put('/api/spotify/play', requireLogin, (req, res) => {
+  app.put('/api/spotify/play', requireActive, (req, res) => {
     axios
       .put(
         `${api}/me/player/play?device_id=${req.body.deviceId}`,

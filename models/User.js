@@ -12,6 +12,7 @@ const userSchema = new Schema({
   longArtistIds: [String],
   accessToken: String,
   refreshToken: String,
+  tokenExpires: Date,
 });
 
 mongoose.model('users', userSchema);
