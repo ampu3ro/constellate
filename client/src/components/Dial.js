@@ -75,7 +75,11 @@ class Dial extends Component {
             userActive ? 'Log out' : currentUser ? 'Reconnect' : 'Log in'
           }
           FabProps={{
-            href: userActive ? '/api/logout' : '/auth/spotify',
+            href: userActive
+              ? '/api/logout'
+              : currentUser
+              ? '/auth/spotify/reconnect'
+              : '/auth/spotify',
           }}
         />
         {currentUser && (
