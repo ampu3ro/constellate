@@ -7,13 +7,14 @@ import Landing from './Landing';
 import Help from './Help';
 import Note from './Note';
 import Artists from './Artists';
+import Loading from './Loading';
 
 import { Container, CssBaseline } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core/styles';
 import spotifyTheme from '../theme';
 
 class App extends Component {
-  state = { in: false };
+  state = { in: false, open: false };
 
   componentDidMount() {
     this.props.fetchCurrentUser().then(() => {
@@ -25,6 +26,7 @@ class App extends Component {
 
   render() {
     const timeout = 1000;
+    const { userActive, helpButton } = this.props;
 
     const onClose = () => {
       this.props.setHelpOpen(false);
@@ -35,14 +37,15 @@ class App extends Component {
       <div>
         <ThemeProvider theme={spotifyTheme}>
           <CssBaseline>
-            <Help
-              open={this.props.helpOpen}
-              onClose={onClose}
-              timeout={timeout}
-            />
-            <Note />
-            <Container>
-              <BrowserRouter>
+            <BrowserRouter>
+              <Help
+                open={this.props.helpOpen}
+                onClose={onClose}
+                timeout={timeout}
+              />
+              <Loading open={helpButton && userActive} />
+              <Note />
+              <Container>
                 <div>
                   <Route exact path="/">
                     <Landing
@@ -52,8 +55,8 @@ class App extends Component {
                   </Route>
                   <Artists />
                 </div>
-              </BrowserRouter>
-            </Container>
+              </Container>
+            </BrowserRouter>
           </CssBaseline>
         </ThemeProvider>
       </div>
@@ -61,8 +64,8 @@ class App extends Component {
   }
 }
 
-function mapStateToProps({ currentUser, helpOpen }) {
-  return { currentUser, helpOpen };
+function mapStateToProps({ currentUser, helpOpen, userActive, helpButton }) {
+  return { currentUser, helpOpen, userActive, helpButton };
 }
 
 export default connect(mapStateToProps, actions)(App);

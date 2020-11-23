@@ -6,7 +6,7 @@ export const fetchCurrentUser = () => async (dispatch) => {
 };
 
 export const checkActiveUser = (currentUser) => (dispatch) => {
-  const active = Date.parse(currentUser.tokenExpires) >= Date.now();
+  const active = Date.parse(currentUser?.tokenExpires) >= Date.now();
   dispatch({ type: 'active_user', payload: active });
 };
 
@@ -21,6 +21,11 @@ export const fetchArtists = (spotifyIds) => async (dispatch) => {
 };
 
 export const setHelpOpen = (open) => ({ type: 'help', payload: open });
+
+export const setHelpButton = (clicked) => ({
+  type: 'help_button',
+  payload: clicked,
+});
 
 export const setNoteOpen = (open) => ({ type: 'note', payload: open });
 

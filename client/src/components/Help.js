@@ -1,4 +1,7 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
+import { setHelpButton } from '../actions';
 
 import {
   Modal,
@@ -7,7 +10,11 @@ import {
   Paper,
   Typography,
   Link,
+  Button,
+  Grid,
 } from '@material-ui/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -30,6 +37,16 @@ const useStyles = makeStyles((theme) => ({
 
 const Help = ({ open, onClose, timeout }) => {
   const classes = useStyles();
+
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const currentUser = useSelector(({ currentUser }) => currentUser);
+
+  const handleClick = () => {
+    history.push('/auth/spotify');
+    history.go(0);
+    dispatch(setHelpButton(true));
+  };
 
   return (
     <Modal
@@ -63,11 +80,24 @@ const Help = ({ open, onClose, timeout }) => {
               understanding of the types of music you listen to, and where there
               are similarities with your friends' preferences.
             </Typography>
-            <Typography>
-              Click on a node/star to play top songs from that artist and
-              discover music others listen to. Scroll to zoom in and out of the
-              star map and drag to pan.
-            </Typography>
+            {currentUser && (
+              <Typography>
+                Click on a node/star to play top songs from that artist and
+                discover music others listen to. Scroll to zoom in and out of
+                the star map and drag to pan.
+              </Typography>
+            )}
+            {!currentUser && (
+              <Grid container justify="flex-end">
+                <Button
+                  variant="outlined"
+                  startIcon={<FontAwesomeIcon icon={faSpotify} color="white" />}
+                  onClick={handleClick}
+                >
+                  Connect
+                </Button>
+              </Grid>
+            )}
           </div>
         </Paper>
       </Fade>

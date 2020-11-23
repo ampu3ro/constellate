@@ -26,7 +26,7 @@ class Dial extends Component {
   };
 
   componentDidMount() {
-    this.timer = setInterval(this.tick, 5000);
+    this.timer = setInterval(this.tick, 1000);
   }
 
   componentWillUnmount() {
@@ -34,14 +34,13 @@ class Dial extends Component {
   }
 
   render() {
-    const { currentUser, userActive, history, TransitionProps } = this.props;
+    const { currentUser, userActive, TransitionProps } = this.props;
 
     if (currentUser === null) return <div></div>;
 
     const handleUpdate = async () => {
       this.setState({ loading: true, success: false });
       await axios.get('/api/spotify/artists');
-      history.push('/');
       this.setState({ loading: false, success: true });
     };
 

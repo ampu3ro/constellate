@@ -1,23 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware, compose } from 'redux';
-import reduxThunk from 'redux-thunk';
-
+import { store, persistor } from './store';
+import { PersistGate } from 'redux-persist/integration/react';
 import App from './components/App';
-import reducers from './reducers';
-import axios from 'axios';
-window.axios = axios;
-
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-export const store = createStore(
-  reducers,
-  composeEnhancers(applyMiddleware(reduxThunk))
-);
 
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
   </Provider>,
   document.querySelector('#root')
 );
