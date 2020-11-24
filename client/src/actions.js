@@ -20,6 +20,11 @@ export const fetchArtists = (spotifyIds) => async (dispatch) => {
   dispatch({ type: 'artists', payload: res.data });
 };
 
+export const setUsers = (users) => ({
+  type: 'selected_users',
+  payload: users,
+});
+
 export const setHelpOpen = (open) => ({ type: 'help', payload: open });
 
 export const setHelpButton = (clicked) => ({
@@ -41,7 +46,7 @@ export const changePlayerState = (state) => ({
 
 export const getArtist = async (artistId) => {
   const res = await axios.get('/api/spotify/artist', { params: { artistId } });
-  return { type: 'selected', payload: res.data };
+  return { type: 'selected_artist', payload: res.data };
 };
 
 export const getSimilar = async (artistId) => {

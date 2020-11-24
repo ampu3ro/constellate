@@ -30,22 +30,22 @@ class Artists extends Component {
 
   render() {
     let artists = this.props.artists;
-    const { currentUser, form } = this.props;
+    const { currentUser, selectedUsers, form } = this.props;
 
     if (!artists.length || currentUser === null) return <div></div>;
 
-    const others = form?.usersForm?.values?.users || [];
-    const filter = form?.artistsForm?.values?.filter || '';
-    const tag = `${filter}ArtistIds`;
+    const filterValue = form?.artistsForm?.values?.filter || '';
 
-    let artistIds = currentUser[tag];
-    if (artistIds) {
-      if (others) {
-        artistIds = [...artistIds, ...others.map((v) => v[tag]).flat()];
-        artistIds = [...new Set(artistIds)];
+    if (selectedUsers.length) {
+      const tag = `${filterValue}ArtistIds`;
+      const selectedIds = selectedUsers.map((user) => user[tag] || []).flat();
+      if (selectedIds.length) {
+        artists = artists.filter(({ artistId }) =>
+          selectedIds.includes(artistId)
+        );
       }
-      artists = artists.filter(({ artistId }) => artistIds.includes(artistId));
     }
+
     const network = formatNetwork(artists);
 
     const layerIds = [
@@ -98,7 +98,7 @@ class Artists extends Component {
         )}
         <Graphs
           data={network}
-          key={filter}
+          key={filterValue}
           showBar={this.state.showBar}
           color={color}
         />
@@ -109,8 +109,14 @@ class Artists extends Component {
   }
 }
 
-function mapStateToProps({ currentUser, publicUsers, artists, form }) {
-  return { currentUser, publicUsers, artists, form };
+function mapStateToProps({
+  currentUser,
+  publicUsers,
+  artists,
+  form,
+  selectedUsers,
+}) {
+  return { currentUser, publicUsers, artists, form, selectedUsers };
 }
 
 export default connect(mapStateToProps, actions)(Artists);

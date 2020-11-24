@@ -8,14 +8,18 @@ import { Autocomplete } from '@material-ui/lab';
 import Brightness1Icon from '@material-ui/icons/Brightness1';
 
 class UsersForm extends Component {
-  state = { selected: [] };
-
   componentDidMount() {
-    this.setState({ selected: [this.props.currentUser] });
+    this.props.setUsers([this.props.currentUser]);
   }
 
   render() {
-    const { currentUser, publicUsers } = this.props;
+    const {
+      currentUser,
+      publicUsers,
+      selectedUsers,
+      fetchArtists,
+      setUsers,
+    } = this.props;
     if (!publicUsers) return <div></div>;
 
     const options = [
@@ -36,14 +40,14 @@ class UsersForm extends Component {
             />
           )}
           options={options}
-          value={this.state.selected}
+          value={selectedUsers}
           getOptionSelected={(option, value) =>
             option.spotifyId === value.spotifyId
           }
           getOptionLabel={(option) => option.name}
-          onChange={(event, value) => {
-            this.props.fetchArtists(value.map((v) => v.spotifyId));
-            this.setState({ selected: value });
+          onChange={async (event, value) => {
+            await fetchArtists(value.map((v) => v.spotifyId));
+            setUsers(value);
           }}
           renderTags={(value, getTagProps) => {
             return value.map((option, index) => (
@@ -66,8 +70,8 @@ class UsersForm extends Component {
   }
 }
 
-function mapStateToProps({ currentUser, publicUsers }) {
-  return { currentUser, publicUsers };
+function mapStateToProps({ currentUser, publicUsers, selectedUsers }) {
+  return { currentUser, publicUsers, selectedUsers };
 }
 
 export default connect(mapStateToProps, actions)(UsersForm);

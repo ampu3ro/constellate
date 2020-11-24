@@ -9,11 +9,13 @@ export default combineReducers({
   artists: (state = [], action) =>
     action.type === 'artists' ? action.payload : state,
   selectedArtist: (state = null, action) =>
-    action.type === 'selected' ? action.payload : state,
+    action.type === 'selected_artist' ? action.payload : state,
   similarArtists: (state = [], action) =>
     action.type === 'similar' ? action.payload : state,
   userActive: (state = false, action) =>
     action.type === 'active_user' ? action.payload : state,
+  selectedUsers: (state = [], action) =>
+    action.type === 'selected_users' ? action.payload : state,
   helpOpen: (state = false, action) =>
     action.type === 'help' ? action.payload : state,
   helpButton: (state = false, action) =>
