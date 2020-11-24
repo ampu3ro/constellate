@@ -122,7 +122,7 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
       .join('circle')
       .attr('class', 'nodes')
       .attr('r', styles.node.r)
-      .style('fill', color(layerIds[0]))
+      .style('fill', (d) => color(d.layerId))
       .on('mouseover', mouseOver)
       .on('mouseout', mouseOut)
       .on('click', (d) => artistSelected(userRef.current, d.id))
