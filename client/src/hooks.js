@@ -9,6 +9,7 @@ export const useArtistSelected = () => {
 
   const artistSelected = useCallback(
     async (userActive, artistId) => {
+      if (!artistId) return;
       if (userActive) {
         const selected = await getArtist(artistId);
         const similar = await getSimilar(artistId);

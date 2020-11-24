@@ -123,6 +123,7 @@ module.exports = (app) => {
   });
 
   app.put('/api/spotify/play', requireActive, (req, res) => {
+    if (!req.body.deviceId) return;
     axios
       .put(
         `${api}/me/player/play?device_id=${req.body.deviceId}`,

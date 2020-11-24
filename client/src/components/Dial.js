@@ -82,7 +82,7 @@ class Dial extends Component {
               : '/auth/spotify',
           }}
         />
-        {currentUser && (
+        {userActive && (
           <SpeedDialAction
             key="public"
             icon={<PublicIcon />}
