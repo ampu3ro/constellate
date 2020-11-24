@@ -54,6 +54,8 @@ class Dial extends Component {
       await this.props.fetchPublicUsers();
     };
 
+    const isTouch = 'ontouchstart' in window;
+
     return (
       <SpeedDial
         ariaLabel="Spotify Speed Dial"
@@ -74,6 +76,7 @@ class Dial extends Component {
           tooltipTitle={
             userActive ? 'Log out' : currentUser ? 'Reconnect' : 'Log in'
           }
+          tooltipOpen={isTouch}
           FabProps={{
             href: userActive
               ? '/api/logout'
@@ -90,6 +93,7 @@ class Dial extends Component {
               'Make artist data ' +
               (currentUser.isPublic ? 'private' : 'public')
             }
+            tooltipOpen={isTouch}
             onClick={handlePublic}
           />
         )}
@@ -98,6 +102,7 @@ class Dial extends Component {
             key="update"
             icon={this.state.loading ? <CircularProgress /> : <UpdateIcon />}
             tooltipTitle="Get/update data"
+            tooltipOpen={isTouch}
             onClick={handleUpdate}
           />
         )}

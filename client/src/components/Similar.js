@@ -81,7 +81,7 @@ const Similar = () => {
           similar artists{' '}
         </Typography>
         {similarArtists.slice(0, 10).map(({ id, name, images }) => (
-          <Tooltip title={name} key={id}>
+          <Tooltip title={name} key={id} disableFocusListener>
             <IconButton
               className={classes.similar}
               onClick={() => artistSelected(id)}
