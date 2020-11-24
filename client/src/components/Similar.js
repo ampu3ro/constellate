@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useArtistSelected } from '../hooks';
 
@@ -51,11 +51,15 @@ const useStyles = makeStyles((theme) => ({
 const Similar = () => {
   const classes = useStyles();
   const currentUser = useSelector(({ currentUser }) => currentUser);
-  const userActive = useSelector(({ userActive }) => userActive);
   const artists = useSelector(({ artists }) => artists);
   const selectedArtist = useSelector(({ selectedArtist }) => selectedArtist);
   const similarArtists = useSelector(({ similarArtists }) => similarArtists);
-  const { artistSelected } = useArtistSelected();
+
+  const userRef = useRef();
+  const { userActive, artistSelected } = useArtistSelected();
+  useEffect(() => {
+    userRef.current = userActive;
+  }, [userActive]);
 
   if (!userActive || selectedArtist === null) {
     return <div></div>;
@@ -81,14 +85,10 @@ const Similar = () => {
           similar artists{' '}
         </Typography>
         {similarArtists.slice(0, 10).map(({ id, name, images }) => (
-          <Tooltip
-            title={name}
-            key={id}
-            disableFocusListener
-            onOpen={() => artistSelected(id)}
-          >
+          <Tooltip title={name} key={id} disableFocusListener>
             <IconButton
               className={classes.similar}
+              onClick={() => artistSelected(userActive, id)}
               disableRipple
               disableFocusRipple
             >

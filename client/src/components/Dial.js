@@ -10,8 +10,8 @@ import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import UpdateIcon from '@material-ui/icons/Update';
 import PublicIcon from '@material-ui/icons/Public';
-
 import { CircularProgress } from '@material-ui/core';
+import { withStyles } from '@material-ui/styles';
 
 const styles = () => ({
   tooltip: {
@@ -40,7 +40,7 @@ class Dial extends Component {
   }
 
   render() {
-    const { currentUser, userActive, TransitionProps } = this.props;
+    const { classes, currentUser, userActive, TransitionProps } = this.props;
 
     if (currentUser === null) return <div></div>;
 
