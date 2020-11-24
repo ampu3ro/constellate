@@ -13,6 +13,12 @@ import PublicIcon from '@material-ui/icons/Public';
 
 import { CircularProgress } from '@material-ui/core';
 
+const styles = () => ({
+  tooltip: {
+    maxWidth: 600,
+  },
+});
+
 class Dial extends Component {
   state = {
     open: false,
@@ -73,6 +79,7 @@ class Dial extends Component {
         <SpeedDialAction
           key="account"
           icon={<AccountCircleIcon />}
+          className={classes.tooltip}
           tooltipTitle={
             userActive ? 'Log out' : currentUser ? 'Reconnect' : 'Log in'
           }
@@ -89,6 +96,7 @@ class Dial extends Component {
           <SpeedDialAction
             key="public"
             icon={<PublicIcon />}
+            className={classes.tooltip}
             tooltipTitle={
               'Make artist data ' +
               (currentUser.isPublic ? 'private' : 'public')
@@ -101,6 +109,7 @@ class Dial extends Component {
           <SpeedDialAction
             key="update"
             icon={this.state.loading ? <CircularProgress /> : <UpdateIcon />}
+            className={classes.tooltip}
             tooltipTitle="Get/update data"
             tooltipOpen={isTouch}
             onClick={handleUpdate}
@@ -115,4 +124,7 @@ function mapStateToProps({ currentUser, userActive, form }) {
   return { currentUser, userActive, form };
 }
 
-export default connect(mapStateToProps, actions)(withRouter(Dial));
+export default connect(
+  mapStateToProps,
+  actions
+)(withRouter(withStyles(styles)(Dial)));
