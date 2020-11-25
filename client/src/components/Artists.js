@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core';
 import UsersForm from './forms/UsersForm';
 import ArtistsForm from './forms/ArtistsForm';
+import FILTER_OPTIONS from './forms/filterOptions';
 
 import Graphs from './Graphs';
 import formatNetwork from '../utils/formatNetwork';
@@ -21,7 +22,7 @@ import Similar from './Similar';
 const palette = ['#fff', ...d3.schemeCategory10];
 
 class Artists extends Component {
-  state = { showToggles: false, showBar: false };
+  state = { showToggles: false, showBar: false, showOverlap: false };
 
   componentDidMount() {
     this.props.fetchPublicUsers();
@@ -31,19 +32,34 @@ class Artists extends Component {
   render() {
     let artists = this.props.artists;
     const { currentUser, selectedUsers, form } = this.props;
+    const { showToggles, showBar, showOverlap } = this.state;
 
     if (!artists.length || currentUser === null) return <div></div>;
 
-    const filterValue = form?.artistsForm?.values?.filter || '';
+    const multiUser = selectedUsers.length > 1;
+    const filterValue = form?.artistsForm?.values?.filter || 'all';
 
     if (selectedUsers.length) {
-      const tag = `${filterValue}ArtistIds`;
-      const selectedIds = selectedUsers.map((user) => user[tag] || []).flat();
-      if (selectedIds.length) {
-        artists = artists.filter(({ artistId }) =>
-          selectedIds.includes(artistId)
+      const filterValues =
+        filterValue === 'all' ? Object.keys(FILTER_OPTIONS) : [filterValue];
+      const tags = filterValues.map((value) => `${value}ArtistIds`);
+
+      let selectedIds = selectedUsers
+        .map((user) => {
+          const ids = tags.map((tag) => user[tag] || []).flat();
+          return [...new Set(ids)];
+        })
+        .flat();
+
+      if (multiUser && showOverlap) {
+        selectedIds = selectedIds.filter(
+          (a, i, aa) => aa.indexOf(a) === i && aa.lastIndexOf(a) !== i
         );
       }
+
+      artists = artists.filter(({ artistId }) =>
+        selectedIds.includes(artistId)
+      );
     }
 
     const network = formatNetwork(artists);
@@ -63,7 +79,7 @@ class Artists extends Component {
             control={
               <Switch
                 color="primary"
-                checked={this.state.showToggles}
+                checked={showToggles}
                 onChange={(event) =>
                   this.setState({ showToggles: event.target.checked })
                 }
@@ -72,19 +88,19 @@ class Artists extends Component {
             label="Show data toggles"
           />
         </FormControl>
-        {this.state.showToggles && (
+        {showToggles && (
           <Grid container spacing={2} style={{ marginTop: 20 }}>
-            <Grid item xs={12} lg={6}>
+            <Grid item sm={12} md={6}>
               <UsersForm color={color} />
             </Grid>
-            <Grid item xs={12} lg={4}>
+            <Grid item sm={12} md={multiUser ? 6 : 4}>
               <ArtistsForm />
             </Grid>
-            <Grid item xs={12} lg={2}>
+            <Grid item sm={12} md={multiUser ? 4 : 2}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={this.state.showBar}
+                    checked={showBar}
                     onChange={(e) =>
                       this.setState({ showBar: e.target.checked })
                     }
@@ -94,12 +110,28 @@ class Artists extends Component {
                 label="Show top genres"
               />
             </Grid>
+            {multiUser && (
+              <Grid item sm={12} md={4}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={showOverlap}
+                      onChange={(e) =>
+                        this.setState({ showOverlap: e.target.checked })
+                      }
+                      color="primary"
+                    />
+                  }
+                  label="Show overlapping only"
+                />
+              </Grid>
+            )}
           </Grid>
         )}
         <Graphs
           data={network}
           key={filterValue}
-          showBar={this.state.showBar}
+          showBar={showBar}
           color={color}
         />
         <Similar color={color} />

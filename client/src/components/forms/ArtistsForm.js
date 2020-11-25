@@ -1,6 +1,7 @@
 import React from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { MenuItem, FormControl, InputLabel, Select } from '@material-ui/core';
+import FILTER_OPTIONS from './filterOptions';
 
 const renderSelectField = ({ input, label, children }) => (
   <FormControl fullWidth={true}>
@@ -20,10 +21,11 @@ const ArtistsForm = () => {
         label="Show most played artists from the last..."
         autoWidth={true}
       >
-        <MenuItem value={'short'}>4 weeks</MenuItem>
-        <MenuItem value={'medium'}>6 months</MenuItem>
-        <MenuItem value={'long'}>Several years</MenuItem>
-        <MenuItem value={'all'}>Show all</MenuItem>
+        {Object.keys(FILTER_OPTIONS).map((value) => (
+          <MenuItem value={value} key={value}>
+            {FILTER_OPTIONS[value]}
+          </MenuItem>
+        ))}
       </Field>
     </form>
   );
