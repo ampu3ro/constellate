@@ -5,7 +5,6 @@ import * as actions from '../actions';
 
 import Landing from './Landing';
 import Help from './Help';
-import Note from './Note';
 import Artists from './Artists';
 import Loading from './Loading';
 
@@ -44,7 +43,6 @@ class App extends Component {
                 timeout={timeout}
               />
               <Loading open={helpButton && userActive} />
-              <Note />
               <Container>
                 <div>
                   <Route exact path="/">

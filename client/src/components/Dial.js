@@ -21,7 +21,6 @@ const styles = () => ({
 
 class Dial extends Component {
   state = {
-    open: false,
     loading: false,
     success: false,
     form: false,
@@ -40,7 +39,14 @@ class Dial extends Component {
   }
 
   render() {
-    const { classes, currentUser, userActive, TransitionProps } = this.props;
+    const {
+      classes,
+      currentUser,
+      userActive,
+      dialOpen,
+      setDialOpen,
+      TransitionProps,
+    } = this.props;
 
     if (currentUser === null) return <div></div>;
 
@@ -70,9 +76,9 @@ class Dial extends Component {
             icon={<FontAwesomeIcon icon={faSpotify} size="2x" color="white" />}
           />
         }
-        onClose={() => this.setState({ open: false })}
-        onOpen={() => this.setState({ open: true })}
-        open={this.state.open}
+        onClose={() => setDialOpen(false)}
+        onOpen={() => setDialOpen(true)}
+        open={dialOpen}
         direction="down"
         TransitionProps={TransitionProps}
       >
@@ -120,8 +126,8 @@ class Dial extends Component {
   }
 }
 
-function mapStateToProps({ currentUser, userActive, form }) {
-  return { currentUser, userActive, form };
+function mapStateToProps({ currentUser, userActive, dialOpen, form }) {
+  return { currentUser, userActive, dialOpen, form };
 }
 
 export default connect(

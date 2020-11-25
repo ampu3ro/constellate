@@ -32,6 +32,8 @@ export const setHelpButton = (clicked) => ({
   payload: clicked,
 });
 
+export const setDialOpen = (open) => ({ type: 'dial', payload: open });
+
 export const setNoteOpen = (open) => ({ type: 'note', payload: open });
 
 export const setDeviceId = (deviceId) => ({

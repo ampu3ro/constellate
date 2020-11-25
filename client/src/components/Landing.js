@@ -1,6 +1,8 @@
 import React from 'react';
 import { Grid, IconButton, Typography } from '@material-ui/core';
+
 import Dial from './Dial';
+import Note from './Note';
 
 import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { makeStyles } from '@material-ui/core/styles';
@@ -17,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     top: theme.spacing(2),
     right: 0,
+  },
+  note: {
+    position: 'relative',
   },
 }));
 
@@ -40,9 +45,10 @@ const Landing = ({ TransitionProps, onHelpClick }) => {
           </Typography>
         </Grid>
       </Grid>
-      <div className={classes.dial}>
+      <Grid container direction="row-reverse" className={classes.dial}>
         <Dial TransitionProps={TransitionProps} />
-      </div>
+        <Note className={classes.note} />
+      </Grid>
     </div>
   );
 };
