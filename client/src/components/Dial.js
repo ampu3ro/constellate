@@ -15,7 +15,7 @@ import { withStyles } from '@material-ui/styles';
 
 const styles = () => ({
   tooltip: {
-    maxWidth: 600,
+    maxWidth: 'none',
   },
 });
 
