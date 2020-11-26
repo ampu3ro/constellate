@@ -85,7 +85,7 @@ class Dial extends Component {
         <SpeedDialAction
           key="account"
           icon={<AccountCircleIcon />}
-          classes={classes.tooltip}
+          classes={{ tooltip: classes.tooltip }}
           tooltipTitle={
             userActive ? 'Log out' : currentUser ? 'Reconnect' : 'Log in'
           }
@@ -102,7 +102,7 @@ class Dial extends Component {
           <SpeedDialAction
             key="public"
             icon={<PublicIcon />}
-            classes={classes.tooltip}
+            classes={{ tooltip: classes.tooltip }}
             tooltipTitle={
               'Make artist data ' +
               (currentUser.isPublic ? 'private' : 'public')
@@ -115,7 +115,7 @@ class Dial extends Component {
           <SpeedDialAction
             key="update"
             icon={this.state.loading ? <CircularProgress /> : <UpdateIcon />}
-            classes={classes.tooltip}
+            classes={{ tooltip: classes.tooltip }}
             tooltipTitle="Get/update data"
             tooltipOpen={isTouch}
             onClick={handleUpdate}
