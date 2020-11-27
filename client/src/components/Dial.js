@@ -7,9 +7,13 @@ import { withRouter } from 'react-router';
 import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import {
+  faUserAlt,
+  faUserAltSlash,
+  faEye,
+  faEyeSlash,
+} from '@fortawesome/free-solid-svg-icons';
 import UpdateIcon from '@material-ui/icons/Update';
-import PublicIcon from '@material-ui/icons/Public';
 import { CircularProgress } from '@material-ui/core';
 import { withStyles } from '@material-ui/styles';
 
@@ -84,7 +88,7 @@ class Dial extends Component {
       >
         <SpeedDialAction
           key="account"
-          icon={<AccountCircleIcon />}
+          icon={userActive ? <faUserAltSlash /> : <faUserAlt />}
           classes={{ tooltip: classes.tooltip }}
           tooltipTitle={
             userActive ? 'Log out' : currentUser ? 'Reconnect' : 'Log in'
@@ -101,7 +105,7 @@ class Dial extends Component {
         {userActive && (
           <SpeedDialAction
             key="public"
-            icon={<PublicIcon />}
+            icon={currentUser.isPublic ? <faEyeSlash /> : <faEye />}
             classes={{ tooltip: classes.tooltip }}
             tooltipTitle={
               'Make artist data ' +
