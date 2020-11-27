@@ -8,8 +8,8 @@ import { SpeedDial, SpeedDialAction, SpeedDialIcon } from '@material-ui/lab';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpotify } from '@fortawesome/free-brands-svg-icons';
 import {
-  faUserAlt,
-  faUserAltSlash,
+  faUser,
+  faUserSlash,
   faEye,
   faEyeSlash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -88,8 +88,8 @@ class Dial extends Component {
       >
         <SpeedDialAction
           key="account"
-          icon={userActive ? <faUserAltSlash /> : <faUserAlt />}
-          classes={{ tooltip: classes.tooltip }}
+          icon={<FontAwesomeIcon icon={userActive ? faUserSlash : faUser} />}
+          TooltipClasses={{ tooltip: classes.tooltip }}
           tooltipTitle={
             userActive ? 'Log out' : currentUser ? 'Reconnect' : 'Log in'
           }
@@ -105,8 +105,12 @@ class Dial extends Component {
         {userActive && (
           <SpeedDialAction
             key="public"
-            icon={currentUser.isPublic ? <faEyeSlash /> : <faEye />}
-            classes={{ tooltip: classes.tooltip }}
+            icon={
+              <FontAwesomeIcon
+                icon={currentUser.isPublic ? faEyeSlash : faEye}
+              />
+            }
+            TooltipClasses={{ tooltip: classes.tooltip }}
             tooltipTitle={
               'Make artist data ' +
               (currentUser.isPublic ? 'private' : 'public')
@@ -119,7 +123,7 @@ class Dial extends Component {
           <SpeedDialAction
             key="update"
             icon={this.state.loading ? <CircularProgress /> : <UpdateIcon />}
-            classes={{ tooltip: classes.tooltip }}
+            TooltipClasses={{ tooltip: classes.tooltip }}
             tooltipTitle="Get/update data"
             tooltipOpen={isTouch}
             onClick={handleUpdate}
