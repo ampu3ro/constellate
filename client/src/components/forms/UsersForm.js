@@ -59,7 +59,7 @@ class UsersForm extends Component {
                   />
                 }
                 {...getTagProps({ index })}
-                disabled={option.spotifyId === currentUser.spotifyId}
+                // disabled={option.spotifyId === currentUser.spotifyId}
               />
             ));
           }}
