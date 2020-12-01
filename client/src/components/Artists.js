@@ -2,15 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
-import {
-  Grid,
-  Switch,
-  FormControl,
-  FormControlLabel,
-  Checkbox,
-} from '@material-ui/core';
-import UsersForm from './forms/UsersForm';
-import ArtistsForm from './forms/ArtistsForm';
+import Forms from './forms/Forms';
 import FILTER_OPTIONS from './forms/filterOptions';
 
 import Graphs from './Graphs';
@@ -31,8 +23,13 @@ class Artists extends Component {
 
   render() {
     let artists = this.props.artists;
-    const { currentUser, selectedUsers, form } = this.props;
-    const { showToggles, showBar, showOverlap } = this.state;
+    const {
+      currentUser,
+      selectedUsers,
+      form,
+      showBar,
+      showOverlap,
+    } = this.props;
 
     if (!artists.length || currentUser === null) return <div></div>;
 
@@ -74,60 +71,7 @@ class Artists extends Component {
 
     return (
       <div>
-        <FormControl component="fieldset">
-          <FormControlLabel
-            control={
-              <Switch
-                color="primary"
-                checked={showToggles}
-                onChange={(event) =>
-                  this.setState({ showToggles: event.target.checked })
-                }
-              />
-            }
-            label="Show data toggles"
-          />
-        </FormControl>
-        {showToggles && (
-          <Grid container spacing={2} style={{ marginTop: 20 }}>
-            <Grid item sm={12} md={8}>
-              <UsersForm color={color} />
-            </Grid>
-            <Grid item sm={12} md={4}>
-              <ArtistsForm />
-            </Grid>
-            <Grid item sm={6} md={4}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showBar}
-                    onChange={(e) =>
-                      this.setState({ showBar: e.target.checked })
-                    }
-                    color="primary"
-                  />
-                }
-                label="Show top genres"
-              />
-            </Grid>
-            {multiUser && (
-              <Grid item sm={6} md={4}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={multiUser && showOverlap}
-                      onChange={(e) =>
-                        this.setState({ showOverlap: e.target.checked })
-                      }
-                      color="primary"
-                    />
-                  }
-                  label="Show overlapping only"
-                />
-              </Grid>
-            )}
-          </Grid>
-        )}
+        <Forms multiUser={multiUser} color={color} />
         <Graphs
           data={network}
           key={filterValue}
@@ -147,8 +91,18 @@ function mapStateToProps({
   artists,
   form,
   selectedUsers,
+  showBar,
+  showOverlap,
 }) {
-  return { currentUser, publicUsers, artists, form, selectedUsers };
+  return {
+    currentUser,
+    publicUsers,
+    artists,
+    form,
+    selectedUsers,
+    showBar,
+    showOverlap,
+  };
 }
 
 export default connect(mapStateToProps, actions)(Artists);

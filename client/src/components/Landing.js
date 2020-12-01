@@ -1,9 +1,9 @@
 import React from 'react';
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography, IconButton } from '@material-ui/core';
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 import Dial from './Dial';
 import Note from './Note';
-import HelpIconButton from './HelpIconButton';
 
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -37,7 +37,13 @@ const Landing = ({ TransitionProps, onHelpClick }) => {
             <Typography variant="subtitle1">
               Explore the constellation of artists you listen to on Spotify
             </Typography>
-            <HelpIconButton onHelpClick={onHelpClick} />
+            <IconButton
+              size="small"
+              style={{ marginLeft: 5, marginBottom: 10, zIndex: 10 }}
+              onClick={onHelpClick}
+            >
+              <HelpOutlineIcon fontSize="small" />
+            </IconButton>
           </Grid>
         </Grid>
       </Grid>
