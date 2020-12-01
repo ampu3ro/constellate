@@ -90,13 +90,13 @@ class Artists extends Component {
         </FormControl>
         {showToggles && (
           <Grid container spacing={2} style={{ marginTop: 20 }}>
-            <Grid item sm={12} md={6}>
+            <Grid item sm={12} md={8}>
               <UsersForm color={color} />
             </Grid>
-            <Grid item sm={12} md={multiUser ? 6 : 4}>
+            <Grid item sm={12} md={4}>
               <ArtistsForm />
             </Grid>
-            <Grid item sm={12} md={multiUser ? 4 : 2}>
+            <Grid item sm={6} md={4}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -111,11 +111,11 @@ class Artists extends Component {
               />
             </Grid>
             {multiUser && (
-              <Grid item sm={12} md={4}>
+              <Grid item sm={6} md={4}>
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={showOverlap}
+                      checked={multiUser && showOverlap}
                       onChange={(e) =>
                         this.setState({ showOverlap: e.target.checked })
                       }
