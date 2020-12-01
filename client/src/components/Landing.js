@@ -1,10 +1,10 @@
 import React from 'react';
-import { Grid, IconButton, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 
 import Dial from './Dial';
 import Note from './Note';
+import HelpIconButton from './HelpIconButton';
 
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -33,16 +33,12 @@ const Landing = ({ TransitionProps, onHelpClick }) => {
       <Grid container className={classes.header}>
         <Grid item xs={9}>
           <Typography variant="h2">Constellate</Typography>
-          <Typography variant="subtitle1">
-            Explore the constellation of artists you listen to on Spotify
-            <IconButton
-              size="small"
-              style={{ marginLeft: 5, marginBottom: 10 }}
-              onClick={onHelpClick}
-            >
-              <HelpOutlineIcon fontSize="small" />
-            </IconButton>
-          </Typography>
+          <Grid container direction="row">
+            <Typography variant="subtitle1">
+              Explore the constellation of artists you listen to on Spotify
+            </Typography>
+            <HelpIconButton onHelpClick={onHelpClick} />
+          </Grid>
         </Grid>
       </Grid>
       <Grid container direction="row-reverse" className={classes.dial}>

@@ -25,10 +25,10 @@ class App extends Component {
 
   render() {
     const timeout = 1000;
-    const { userActive, helpButton } = this.props;
+    const { userActive, helpOpen, setHelpOpen, helpButton } = this.props;
 
     const onClose = () => {
-      this.props.setHelpOpen(false);
+      setHelpOpen(false);
       this.setState({ in: true });
     };
 
@@ -37,18 +37,14 @@ class App extends Component {
         <ThemeProvider theme={spotifyTheme}>
           <CssBaseline>
             <BrowserRouter>
-              <Help
-                open={this.props.helpOpen}
-                onClose={onClose}
-                timeout={timeout}
-              />
+              <Help open={helpOpen} onClose={onClose} timeout={timeout} />
               <Loading open={helpButton && userActive} />
               <Container>
                 <div>
                   <Route exact path="/">
                     <Landing
                       TransitionProps={{ in: this.state.in, timeout }}
-                      onHelpClick={() => this.props.setHelpOpen(true)}
+                      onHelpClick={() => setHelpOpen(true)}
                     />
                   </Route>
                   <Artists />
