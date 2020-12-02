@@ -56,47 +56,49 @@ class Forms extends Component {
           />
         </FormControl>
         {showToggles && (
-          <Grid
-            container
-            spacing={2}
-            style={{ marginTop: 20 }}
-            alignItems="center"
-          >
-            <Grid item sm={12} md={8}>
+          <Grid container spacing={2} style={{ marginTop: 20 }}>
+            <Grid item xs={12} sm={12} md={8}>
               <UsersForm color={color} />
             </Grid>
-            <Grid item sm={12} md={4}>
+            <Grid item xs={12} sm={12} md={4}>
               <ArtistsForm />
             </Grid>
-            <Grid item sm={6} md={4}>
-              <Grid container alignItems="center">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={showBar}
-                      onChange={(e) => setBar(e.target.checked)}
-                      color="primary"
-                    />
-                  }
-                  label="Show top genres"
-                />
-                <Tooltip
-                  className={classes.tooltip}
-                  placement="right"
-                  title={
-                    <Typography>
-                      Top 5 genres for the highlighted artists or overall if
-                      none are selected. Percentages are relative each user's
-                      total.
-                    </Typography>
-                  }
-                >
-                  <HelpIcon fontSize="small" />
-                </Tooltip>
-              </Grid>
+            <Grid item xs={6} sm={6} md={4}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={showBar}
+                    onChange={(e) => setBar(e.target.checked)}
+                    color="primary"
+                  />
+                }
+                label={
+                  <Typography>
+                    Show top genres
+                    <Tooltip
+                      className={classes.tooltip}
+                      placement="right"
+                      title={
+                        <Typography>
+                          Top 5 genres for the highlighted artists or overall if
+                          none are selected. Percentages are relative each
+                          user's total.
+                        </Typography>
+                      }
+                    >
+                      <HelpIcon
+                        style={{
+                          marginLeft: 10,
+                          fontSize: 18,
+                        }}
+                      />
+                    </Tooltip>
+                  </Typography>
+                }
+              />
             </Grid>
             {multiUser && (
-              <Grid item sm={6} md={4}>
+              <Grid item xs={6} sm={6} md={4}>
                 <FormControlLabel
                   control={
                     <Checkbox
