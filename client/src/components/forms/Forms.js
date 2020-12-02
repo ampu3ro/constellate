@@ -8,15 +8,27 @@ import {
   FormControl,
   FormControlLabel,
   Checkbox,
+  Tooltip,
+  Typography,
 } from '@material-ui/core';
+import HelpIcon from '@material-ui/icons/Help';
+import { withStyles } from '@material-ui/styles';
+
 import UsersForm from './UsersForm';
 import ArtistsForm from './ArtistsForm';
+
+const styles = (theme) => ({
+  tooltip: {
+    backgroudColor: theme.palette.secondary,
+  },
+});
 
 class Forms extends Component {
   state = { showToggles: false };
 
   render() {
     const {
+      classes,
       showBar,
       setBar,
       showOverlap,
@@ -44,7 +56,12 @@ class Forms extends Component {
           />
         </FormControl>
         {showToggles && (
-          <Grid container spacing={2} style={{ marginTop: 20 }}>
+          <Grid
+            container
+            spacing={2}
+            style={{ marginTop: 20 }}
+            alignItems="center"
+          >
             <Grid item sm={12} md={8}>
               <UsersForm color={color} />
             </Grid>
@@ -52,16 +69,31 @@ class Forms extends Component {
               <ArtistsForm />
             </Grid>
             <Grid item sm={6} md={4}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showBar}
-                    onChange={(e) => setBar(e.target.checked)}
-                    color="primary"
-                  />
-                }
-                label="Show top genres"
-              />
+              <Grid container alignItems="center">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={showBar}
+                      onChange={(e) => setBar(e.target.checked)}
+                      color="primary"
+                    />
+                  }
+                  label="Show top genres"
+                />
+                <Tooltip
+                  className={classes.tooltip}
+                  placement="right"
+                  title={
+                    <Typography>
+                      Top 5 genres for the highlighted artists or overall if
+                      none are selected. Percentages are relative each user's
+                      total.
+                    </Typography>
+                  }
+                >
+                  <HelpIcon fontSize="small" />
+                </Tooltip>
+              </Grid>
             </Grid>
             {multiUser && (
               <Grid item sm={6} md={4}>
@@ -88,4 +120,4 @@ function mapStateToProps({ showToggles, showBar, showOverlap }) {
   return { showToggles, showBar, showOverlap };
 }
 
-export default connect(mapStateToProps, actions)(Forms);
+export default connect(mapStateToProps, actions)(withStyles(styles)(Forms));
