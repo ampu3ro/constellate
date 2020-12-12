@@ -29,8 +29,8 @@ class Forms extends Component {
   render() {
     const {
       classes,
-      showBar,
-      setBar,
+      showGenres,
+      setGenres,
       showOverlap,
       setOverlap,
       multiUser,
@@ -67,8 +67,8 @@ class Forms extends Component {
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={showBar}
-                    onChange={(e) => setBar(e.target.checked)}
+                    checked={showGenres}
+                    onChange={(e) => setGenres(e.target.checked)}
                     color="primary"
                   />
                 }
@@ -118,8 +118,8 @@ class Forms extends Component {
   }
 }
 
-function mapStateToProps({ showToggles, showBar, showOverlap }) {
-  return { showToggles, showBar, showOverlap };
+function mapStateToProps({ showToggles, showGenres, showOverlap }) {
+  return { showToggles, showGenres, showOverlap };
 }
 
 export default connect(mapStateToProps, actions)(withStyles(styles)(Forms));

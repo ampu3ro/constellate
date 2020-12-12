@@ -1,7 +1,7 @@
 export default (artists) => {
   if (!artists.length) return;
 
-  const artistIds = artists.map(({ artistId }) => artistId);
+  const artistIds = artists.map((v) => v.artistId);
   let linkedIds = [];
 
   const idPairs = [];
@@ -23,26 +23,22 @@ export default (artists) => {
   });
 
   let nodes = [];
-  const spotifyIds = [
-    ...new Set(artists.map(({ spotifyIds }) => spotifyIds).flat()),
-  ];
+  const spotifyIds = [...new Set(artists.map((v) => v.spotifyIds).flat())];
   for (let spotifyId of spotifyIds) {
     x = artists
-      .filter(({ spotifyIds }) => spotifyIds.includes(spotifyId))
-      .map(({ artistId, name, spotifyIds, userNames, genres }) => ({
-        id: artistId,
-        label: name,
-        genres,
+      .filter((v) => v.spotifyIds.includes(spotifyId))
+      .map((v) => ({
+        id: v.artistId,
+        label: v.name,
+        genres: v.genres,
         layerId: spotifyId,
-        layerName: userNames[spotifyIds.indexOf(spotifyId)],
       }));
+
     nodes.push(...x);
   }
 
   for (let node of nodes) {
-    nodes
-      .filter(({ id }) => id === node.id)
-      .forEach((n, i) => (n.layerIndex = i));
+    nodes.filter((v) => v.id === node.id).forEach((v, i) => (v.layerIndex = i));
   }
 
   return { links, nodes };

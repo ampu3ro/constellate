@@ -36,7 +36,7 @@ export const setDialOpen = (open) => ({ type: 'dial', payload: open });
 
 export const setNoteOpen = (open) => ({ type: 'note', payload: open });
 
-export const setBar = (show) => ({ type: 'bar', payload: show });
+export const setGenres = (show) => ({ type: 'genres', payload: show });
 
 export const setOverlap = (show) => ({ type: 'overlap', payload: show });
 

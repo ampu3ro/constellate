@@ -1,7 +1,10 @@
 import React, { useRef, useEffect } from 'react';
+import * as d3 from 'd3';
+
 import useResizeObserver from '../utils/useResizeObserver';
 import { useArtistSelected } from '../hooks';
-import * as d3 from 'd3';
+import countGenres from '../utils/countGenres';
+import countOverlaps from '../utils/countOverlaps';
 
 const styles = {
   link: { stroke: '#999', alpha: 0.1 },
@@ -11,22 +14,35 @@ const styles = {
   transition: 500,
 };
 
-const Graphs = ({ data, showBar, color, charge, distance }) => {
+const Graphs = ({
+  data,
+  layers,
+  showGenres,
+  showOverlap,
+  color,
+  charge,
+  distance,
+}) => {
   const wrapperRef = useRef();
   const dims = useResizeObserver(wrapperRef);
 
   const svgRef = useRef();
   const networkRef = useRef();
   const linkRef = useRef();
-  const layerRef = useRef();
+  const layerNodeRef = useRef();
   const nodeRef = useRef();
   const labelRef = useRef();
 
   const histogramRef = useRef();
   const barGroupRef = useRef();
   const barRef = useRef();
-  const yLabelRef = useRef();
-  const legendRef = useRef();
+  const yBarRef = useRef();
+
+  const correlogramRef = useRef();
+  const corLabelRef = useRef();
+  const bubbleGroupRef = useRef();
+  const bubbleRef = useRef();
+  const bubbleLabelRef = useRef();
 
   // https://stackoverflow.com/questions/61515547/redux-useselector-not-updated-need-to-be-refresh
   const userRef = useRef();
@@ -38,17 +54,23 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
   const effect = () => {
     if (!dims || !data) return;
 
-    const marginTopHist = 40;
+    const marginTop = 40;
 
-    const dimsHist = {
+    const dimsGenres = {
       margin: { top: 0, right: 0, bottom: 0, left: 0 },
       width: dims.width / 5,
-      height: dims.height / 5,
+      height: dims.height / 4,
+    };
+
+    const dimsOverlap = {
+      margin: { top: 0, right: 20, bottom: 0, left: 0 },
+      width: (layers.length * dims.width) / 20,
+      height: (layers.length * dims.height) / 20,
     };
 
     let { links, nodes } = data;
-
-    const layerIds = [...new Set(nodes.map(({ layerId }) => layerId))];
+    const layerIds = layers.map((v) => v.id);
+    const layerIdsOrdered = [...layerIds].sort();
 
     const simulation = d3
       .forceSimulation()
@@ -68,19 +90,23 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
 
     let link = d3.select(linkRef.current).selectAll('.links');
     let text = d3.select(labelRef.current).selectAll('.labels');
-    let layer = d3.select(layerRef.current).selectAll('.layers');
+    let layerNode = d3.select(layerNodeRef.current).selectAll('.layerNodes');
     let node = d3.select(nodeRef.current).selectAll('.nodes');
 
     // https://observablehq.com/@d3/modifying-a-force-directed-graph
-    links = links.map((d) => Object.assign({}, d));
+    links = links.map((v) => Object.assign({}, v));
 
-    const oldDataMap = new Map(layer.data().map((d) => [d.id + d.layerId, d]));
-    let layers = nodes.map((d) =>
-      Object.assign(oldDataMap.get(d.id + d.layerId) || {}, d)
+    const oldDataMap = new Map(
+      layerNode.data().map((v) => [v.id + v.layerId, v])
+    );
+    let layerNodes = nodes.map((v) =>
+      Object.assign(oldDataMap.get(v.id + v.layerId) || {}, v)
     );
 
-    nodes = layers.filter((v, i, a) => a.findIndex((t) => t.id === v.id) === i);
-    const rest = layers
+    nodes = layerNodes.filter(
+      (v, i, a) => a.findIndex((t) => t.id === v.id) === i
+    );
+    const rest = layerNodes
       .filter((v, i, a) => a.findIndex((t) => t.id === v.id) !== i)
       .map((d) => {
         let n = nodes
@@ -89,7 +115,7 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
         return Object.assign(n[0], d);
       })
       .reverse();
-    layers = [...nodes, ...rest];
+    layerNodes = [...nodes, ...rest];
 
     link = link
       .data(links, (d) => d.source + d.target)
@@ -108,10 +134,10 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
       .style('fill-opacity', styles.text.alpha)
       .style('font-size', styles.text.size);
 
-    layer = layer
-      .data(layers, (d) => d.id + d.layerId)
+    layerNode = layerNode
+      .data(layerNodes, (d) => d.id + d.layerId)
       .join('circle')
-      .attr('class', 'layers')
+      .attr('class', 'layerNodes')
       .attr('r', (d) => styles.node.r * (1 + d.layerIndex / 2))
       .style('fill', (d) => color(d.layerId))
       .on('mouseover', mouseOver)
@@ -132,24 +158,60 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
 
     svg.call(zoom());
 
-    d3.select(histogramRef.current).attr(
-      'transform',
-      `translate(0,${marginTopHist})`
-    );
-
     // https://observablehq.com/@d3/grouped-bar-chart
-    const x = d3
+    const xGenres = d3
       .scaleLinear()
-      .range([dimsHist.margin.left, dimsHist.width - dimsHist.margin.right]);
+      .range([
+        dimsGenres.margin.left,
+        dimsGenres.width - dimsGenres.margin.right,
+      ]);
 
-    const y0 = d3
+    const y0Genres = d3
       .scaleBand()
-      .range([dimsHist.margin.top, dimsHist.height - dimsHist.margin.bottom])
+      .range([
+        dimsGenres.margin.top,
+        dimsGenres.height - dimsGenres.margin.bottom,
+      ])
       .paddingInner(0.5);
 
-    const y1 = d3.scaleBand().domain(layerIds);
+    const y1Genres = d3.scaleBand().domain(layerIds);
 
-    updateBar(layers, showBar);
+    d3.select(histogramRef.current).attr(
+      'transform',
+      `translate(0,${marginTop})`
+    );
+
+    updateGenres(layerNodes, showGenres);
+
+    // https://www.d3-graph-gallery.com/graph/correlogram_basic.html
+    const xOverlap = d3
+      .scalePoint()
+      .range([
+        dimsOverlap.width - dimsOverlap.margin.right,
+        dimsOverlap.margin.left,
+      ])
+      .domain(layerIdsOrdered.slice(1, layers.length).reverse())
+      .align(1)
+      .padding(1);
+
+    const yOverlap = d3
+      .scalePoint()
+      .range([
+        dimsOverlap.margin.top,
+        dimsOverlap.height - dimsOverlap.margin.bottom,
+      ])
+      .domain(layerIdsOrdered.slice(0, layers.length - 1))
+      .align(0)
+      .padding(1);
+
+    d3.select(correlogramRef.current).attr(
+      'transform',
+      `translate(${dims.width - dimsOverlap.width},${marginTop})`
+    );
+
+    d3.select(bubbleGroupRef.current).attr('transform', `translate(0,30)`); // for top label
+
+    updateOverlap(layerNodes, showOverlap);
 
     function ticked() {
       link
@@ -161,7 +223,7 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
       node.attr('cx', (d) => d.x).attr('cy', (d) => d.y);
 
       const nodeData = node.data();
-      layer
+      layerNode
         .attr('cx', (d) => nodeData.filter((v) => v.id === d.id)[0].x)
         .attr('cy', (d) => nodeData.filter((v) => v.id === d.id)[0].y);
 
@@ -220,7 +282,7 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
           o.id === d.id ? styles.text.size2 : styles.text.size
         );
 
-      layer
+      layerNode
         .transition(styles.transition)
         .style('fill-opacity', (o) => (linked(o, d) ? 1 : styles.text.alpha));
 
@@ -229,9 +291,14 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
         .style('fill-opacity', (o) => (linked(o, d) ? 1 : styles.text.alpha))
         .attr('r', (o) => (o.id === d.id ? styles.node.r2 : styles.node.r));
 
-      updateBar(
-        layers.filter((o) => linked(o, d)),
-        showBar
+      updateGenres(
+        layerNodes.filter((o) => linked(o, d)),
+        showGenres
+      );
+
+      updateOverlap(
+        layerNodes.filter((o) => linked(o, d)),
+        showOverlap
       );
     }
 
@@ -245,22 +312,24 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
         .style('fill-opacity', styles.text.alpha)
         .style('font-size', styles.text.size);
 
-      layer.transition(styles.transition).style('fill-opacity', 1);
+      layerNode.transition(styles.transition).style('fill-opacity', 1);
 
       node
         .transition(styles.transition)
         .style('fill-opacity', 1)
         .attr('r', styles.node.r);
 
-      updateBar(layers, showBar);
+      updateGenres(layerNodes, showGenres);
+
+      updateOverlap(layerNodes, showOverlap);
     }
 
-    function updateBar(layers, showBar) {
-      const data = showBar ? countGenres(layers) : [];
+    function updateGenres(layerNodes, showGenres) {
+      const data = showGenres ? countGenres(layerNodes) : [];
 
-      x.domain([0, d3.max(data, (b) => d3.max(layerIds, (l) => b[l]))]);
-      y0.domain(data.map((d) => d.genre));
-      y1.range([0, y0.bandwidth()]);
+      xGenres.domain([0, d3.max(data, (b) => d3.max(layerIds, (l) => b[l]))]);
+      y0Genres.domain(data.map((d) => d.genre));
+      y1Genres.range([0, y0Genres.bandwidth()]);
 
       const barGroup = d3
         .select(barGroupRef.current)
@@ -268,7 +337,7 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
         .data(data)
         .join('g')
         .attr('class', 'barGroups')
-        .attr('transform', (d) => `translate(0,${y0(d.genre)})`);
+        .attr('transform', (d) => `translate(0,${y0Genres(d.genre)})`);
 
       barGroup
         .selectAll('rect')
@@ -276,25 +345,25 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
           layerIds.map((layerId) => ({ layerId, count: d[layerId] }))
         )
         .join('rect')
-        .attr('x', (d) => x(0))
-        .attr('y', (d) => y1(d.layerId))
-        .attr('height', y1.bandwidth())
-        .attr('width', (d) => x(d.count))
+        .attr('x', (d) => xGenres(0))
+        .attr('y', (d) => y1Genres(d.layerId))
+        .attr('height', y1Genres.bandwidth())
+        .attr('width', (d) => xGenres(d.count))
         .attr('fill', (d) => color(d.layerId))
         .attr('fill-opacity', styles.bar.alpha);
 
       barGroup
-        .selectAll('.xLabel')
+        .selectAll('.xBar')
         .data((d) =>
-          layerIds.map((layerId) => ({
+          layerIds.slice(0, 1).map((layerId) => ({
             layerId,
             count: d[layerId] ? d[layerId] : 0,
           }))
         )
         .join('text')
-        .attr('class', 'xLabel')
-        .attr('x', (d) => x(d.count) + 5)
-        .attr('y', (d) => y1(d.layerId) + 1)
+        .attr('class', 'xBar')
+        .attr('x', (d) => xGenres(d.count) + 5)
+        .attr('y', (d) => y1Genres(d.layerId))
         .text((d) => {
           const total = data
             .map((v) => (v[d.layerId] ? v[d.layerId] : 0))
@@ -303,44 +372,77 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
             ? ''
             : ((100 * d.count) / total).toFixed(0) + '%';
         })
-        .attr('alignment-baseline', 'hanging')
+        .style('alignment-baseline', 'hanging')
         .style('fill', styles.text.fill)
-        .style(
-          'font-size',
-          parseFloat(styles.text.size) - layerIds.length / 10 + 'em'
-        );
+        .style('font-size', styles.text.size);
 
-      d3.select(yLabelRef.current)
-        .selectAll('.yLabel')
+      d3.select(yBarRef.current)
+        .selectAll('.yBar')
         .data(data)
         .join('text')
-        .attr('class', 'yLabel')
-        .attr('x', (d) => x(0))
-        .attr('y', (d) => y0(d.genre) - 1)
+        .attr('class', 'yBar')
+        .attr('x', (d) => xGenres(0))
+        .attr('y', (d) => y0Genres(d.genre) - 1)
         .text((d) => d.genre)
         .style('fill', styles.text.fill)
         .style('font-size', styles.text.size);
     }
 
-    function countGenres(nodes) {
-      let counts = [];
-      const genres = [...new Set(nodes.map((d) => d.genres).flat())];
-      for (let genre of genres) {
-        let count = nodes
-          .filter((d) => d.genres.includes(genre))
-          .map((d) => d.layerId)
-          .reduce((a, b) => {
-            a[b] ? a[b]++ : (a[b] = 1);
-            return a;
-          }, {});
+    function updateOverlap(layerNodes, showOverlap) {
+      let data = showOverlap ? countOverlaps(layerNodes) : [];
 
-        count.genre = genre;
-        counts.push(count);
+      const max = d3.max(data.map((v) => v.count));
+
+      function upper(x, y) {
+        return layerIdsOrdered.indexOf(x) > layerIdsOrdered.indexOf(y);
       }
-      counts = counts
-        .sort((a, b) => b[layerIds[0]] - a[layerIds[0]])
-        .slice(0, 5);
-      return counts;
+
+      data = data.reverse().map((v) => ({
+        ...v,
+        r: styles.node.r * (1 + upper(v.x, v.y) + (v.count / max) ** 3),
+      }));
+
+      const dataUpper = data.filter((v) => upper(v.x, v.y));
+      const count = d3.sum(dataUpper.map((v) => v.count));
+      const total = d3.sum(layers.map((v) => v.totalNodes));
+      const percent = ((100 * count) / total).toFixed(0);
+      const label = `${count} overlapping (${percent}%)`;
+      updateCorLabel(showOverlap ? [label] : []);
+
+      d3.select(bubbleRef.current)
+        .selectAll('circle')
+        .data(data)
+        .join('circle')
+        .attr('cx', (d) => (upper(d.x, d.y) ? xOverlap(d.x) : xOverlap(d.y)))
+        .attr('cy', (d) => (upper(d.x, d.y) ? yOverlap(d.y) : yOverlap(d.x)))
+        .attr('r', (d) => d.r)
+        .attr('fill', (d) => color(d.x))
+        .attr('fill-opacity', styles.node.alpha);
+
+      d3.select(bubbleLabelRef.current)
+        .selectAll('text')
+        .data(dataUpper)
+        .join('text')
+        .attr('x', (d) => xOverlap(d.x) - d.r * 1.3)
+        .attr('y', (d) => yOverlap(d.y))
+        .text((d) => d.count)
+        .style('text-anchor', 'end')
+        .style('alignment-baseline', 'middle')
+        .style('font-size', styles.text.size)
+        .style('fill', styles.text.fill);
+    }
+
+    function updateCorLabel(data) {
+      d3.select(corLabelRef.current)
+        .selectAll('text')
+        .data(data)
+        .join('text')
+        .attr('x', dimsOverlap.width)
+        .attr('y', 0)
+        .text((d) => d)
+        .style('text-anchor', 'end')
+        .style('font-size', styles.text.size)
+        .style('fill', styles.text.fill);
     }
   };
 
@@ -351,16 +453,22 @@ const Graphs = ({ data, showBar, color, charge, distance }) => {
       <svg ref={svgRef} width="100%" height={'60vh'}>
         <g ref={networkRef}>
           <g ref={linkRef} />
-          <g ref={layerRef} />
+          <g ref={layerNodeRef} />
           <g ref={nodeRef} />
           <g ref={labelRef} />
         </g>
-        <g ref={legendRef} />
         <g ref={histogramRef}>
           <g ref={barGroupRef}>
             <g ref={barRef} />
           </g>
-          <g ref={yLabelRef} />
+          <g ref={yBarRef} />
+        </g>
+        <g ref={correlogramRef}>
+          <g ref={corLabelRef} />
+          <g ref={bubbleGroupRef}>
+            <g ref={bubbleRef} />
+            <g ref={bubbleLabelRef} />
+          </g>
         </g>
       </svg>
     </div>

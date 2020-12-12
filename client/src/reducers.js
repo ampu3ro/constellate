@@ -24,8 +24,8 @@ export default combineReducers({
     action.type === 'dial' ? action.payload : state,
   noteOpen: (state = false, action) =>
     action.type === 'note' ? action.payload : state,
-  showBar: (state = false, action) =>
-    action.type === 'bar' ? action.payload : state,
+  showGenres: (state = false, action) =>
+    action.type === 'genres' ? action.payload : state,
   showOverlap: (state = false, action) =>
     action.type === 'overlap' ? action.payload : state,
   deviceId: (state = '', action) =>

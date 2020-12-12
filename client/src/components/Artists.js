@@ -14,7 +14,7 @@ import Similar from './Similar';
 const palette = ['#fff', ...d3.schemeCategory10];
 
 class Artists extends Component {
-  state = { showToggles: false, showBar: false, showOverlap: false };
+  state = { showToggles: false, showGenres: false, showOverlap: false };
 
   componentDidMount() {
     this.props.fetchPublicUsers();
@@ -27,11 +27,19 @@ class Artists extends Component {
       currentUser,
       selectedUsers,
       form,
-      showBar,
+      showGenres,
       showOverlap,
     } = this.props;
 
     if (!artists.length || currentUser === null) return <div></div>;
+
+    const users = selectedUsers.length ? selectedUsers : [currentUser];
+    const layers = users.map((v) => ({
+      id: v.spotifyId,
+      name: v.name,
+      totalNodes: artists.filter((x) => x.spotifyIds.includes(v.spotifyId))
+        .length,
+    }));
 
     const multiUser = selectedUsers.length > 1;
     const filterValue = form?.artistsForm?.values?.filter || 'all';
@@ -61,21 +69,20 @@ class Artists extends Component {
 
     const network = formatNetwork(artists);
 
-    const layerIds = [
-      ...new Set([
-        currentUser.spotifyId,
-        ...this.props.publicUsers.map((v) => v.spotifyId),
-      ]),
-    ];
-    const color = d3.scaleOrdinal().domain(layerIds).range(palette);
+    const color = d3
+      .scaleOrdinal()
+      .domain(layers.map((v) => v.id))
+      .range(palette);
 
     return (
       <div>
         <Forms multiUser={multiUser} color={color} />
         <Graphs
-          data={network}
           key={filterValue}
-          showBar={showBar}
+          data={network}
+          layers={layers}
+          showGenres={showGenres}
+          showOverlap={showOverlap}
           color={color}
         />
         <Similar color={color} />
@@ -91,7 +98,7 @@ function mapStateToProps({
   artists,
   form,
   selectedUsers,
-  showBar,
+  showGenres,
   showOverlap,
 }) {
   return {
@@ -100,7 +107,7 @@ function mapStateToProps({
     artists,
     form,
     selectedUsers,
-    showBar,
+    showGenres,
     showOverlap,
   };
 }
