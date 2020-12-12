@@ -25,6 +25,7 @@ class Artists extends Component {
     let artists = this.props.artists;
     const {
       currentUser,
+      userActive,
       selectedUsers,
       form,
       showGenres,
@@ -85,8 +86,12 @@ class Artists extends Component {
           showOverlap={showOverlap}
           color={color}
         />
-        <Similar color={color} />
-        <Player />
+        {userActive && (
+          <div>
+            <Similar color={color} />
+            <Player />
+          </div>
+        )}
       </div>
     );
   }
@@ -94,6 +99,7 @@ class Artists extends Component {
 
 function mapStateToProps({
   currentUser,
+  userActive,
   publicUsers,
   artists,
   form,
@@ -103,6 +109,7 @@ function mapStateToProps({
 }) {
   return {
     currentUser,
+    userActive,
     publicUsers,
     artists,
     form,

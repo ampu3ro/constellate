@@ -25,7 +25,13 @@ class App extends Component {
 
   render() {
     const timeout = 1000;
-    const { userActive, helpOpen, setHelpOpen, helpButton } = this.props;
+    const {
+      currentUser,
+      userActive,
+      helpOpen,
+      setHelpOpen,
+      helpButton,
+    } = this.props;
 
     const onClose = () => {
       setHelpOpen(false);
@@ -38,7 +44,7 @@ class App extends Component {
           <CssBaseline>
             <BrowserRouter>
               <Help open={helpOpen} onClose={onClose} timeout={timeout} />
-              <Loading open={helpButton && userActive} />
+              {userActive ? <Loading open={helpButton} /> : null}
               <Container>
                 <div>
                   <Route exact path="/">
@@ -47,7 +53,7 @@ class App extends Component {
                       onHelpClick={() => setHelpOpen(true)}
                     />
                   </Route>
-                  <Artists />
+                  {currentUser ? <Artists /> : null}
                 </div>
               </Container>
             </BrowserRouter>
