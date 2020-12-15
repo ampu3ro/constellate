@@ -406,8 +406,8 @@ const Graphs = ({
       const count = d3.sum(dataUpper.map((v) => v.count));
       const total = d3.sum(layers.map((v) => v.totalNodes));
       const percent = ((100 * count) / total).toFixed(0);
-      const label = `${count} overlapping (${percent}%)`;
-      updateCorLabel(showOverlap ? [label] : []);
+      const label = showOverlap ? `${count} overlapping (${percent}%)` : '';
+      updateCorLabel([label]);
 
       d3.select(bubbleRef.current)
         .selectAll('circle')

@@ -92,7 +92,7 @@ class Artists extends Component {
           data={network}
           layers={layers}
           showGenres={showGenres}
-          showOverlap={showOverlap}
+          showOverlap={multiUser && showOverlap}
           color={color}
         />
         {userActive && (

@@ -9,8 +9,10 @@ import Brightness1Icon from '@material-ui/icons/Brightness1';
 
 class UsersForm extends Component {
   componentDidMount() {
-    const { currentUser } = this.props;
-    this.props.setUsers(currentUser ? [currentUser] : []);
+    const { currentUser, selectedUsers } = this.props;
+    this.props.setUsers(
+      selectedUsers ? selectedUsers : currentUser ? [currentUser] : []
+    );
   }
 
   render() {
