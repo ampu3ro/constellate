@@ -6,8 +6,9 @@ const User = mongoose.model('users');
 const Artist = mongoose.model('artists');
 
 module.exports = (app) => {
-  app.post('/api/artists', requireLogin, async (req, res) => {
+  app.post('/api/artists', async (req, res) => {
     let spotifyIds = req.body.length ? req.body : req.user.spotifyId;
+    if (!spotifyIds) return;
     let artistIds;
 
     let users = await User.find({ spotifyId: { $in: spotifyIds } }).lean();

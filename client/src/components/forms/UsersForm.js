@@ -9,7 +9,8 @@ import Brightness1Icon from '@material-ui/icons/Brightness1';
 
 class UsersForm extends Component {
   componentDidMount() {
-    this.props.setUsers([this.props.currentUser]);
+    const { currentUser } = this.props;
+    this.props.setUsers(currentUser ? [currentUser] : []);
   }
 
   render() {
@@ -20,12 +21,13 @@ class UsersForm extends Component {
       fetchArtists,
       setUsers,
     } = this.props;
+
     if (!publicUsers) return <div></div>;
 
-    const options = [
-      currentUser,
+    let options = [
       ...publicUsers.filter((user) => user.spotifyId !== currentUser.spotifyId),
     ];
+    if (currentUser) options.unshift(currentUser);
 
     return (
       <div>
@@ -46,7 +48,8 @@ class UsersForm extends Component {
           }
           getOptionLabel={(option) => option.name}
           onChange={async (event, value) => {
-            await fetchArtists(value.map((v) => v.spotifyId));
+            if (value.length || currentUser)
+              await fetchArtists(value.map((v) => v.spotifyId));
             setUsers(value);
           }}
           renderTags={(value, getTagProps) => {
@@ -59,7 +62,7 @@ class UsersForm extends Component {
                   />
                 }
                 {...getTagProps({ index })}
-                // disabled={option.spotifyId === currentUser.spotifyId}
+                disabled={value.length === 1 && !currentUser}
               />
             ));
           }}

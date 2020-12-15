@@ -18,11 +18,13 @@ class Artists extends Component {
 
   componentDidMount() {
     this.props.fetchPublicUsers();
-    this.props.fetchArtists();
+    this.props.fetchCurrentUser().then(() => {
+      if (this.props.currentUser) this.props.fetchArtists();
+    });
   }
 
   render() {
-    let artists = this.props.artists;
+    let { artists } = this.props;
     const {
       currentUser,
       userActive,
@@ -30,11 +32,14 @@ class Artists extends Component {
       form,
       showGenres,
       showOverlap,
+      TransitionProps,
     } = this.props;
 
-    if (!artists.length || currentUser === null) return <div></div>;
-
-    const users = selectedUsers.length ? selectedUsers : [currentUser];
+    const users = selectedUsers.length
+      ? selectedUsers
+      : currentUser
+      ? [currentUser]
+      : [];
     const layers = users.map((v) => ({
       id: v.spotifyId,
       name: v.name,
@@ -77,7 +82,11 @@ class Artists extends Component {
 
     return (
       <div>
-        <Forms multiUser={multiUser} color={color} />
+        <Forms
+          multiUser={multiUser}
+          color={color}
+          TransitionProps={TransitionProps}
+        />
         <Graphs
           key={filterValue}
           data={network}

@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const User = mongoose.model('users');
 
 module.exports = (app) => {
-  app.get('/api/public_users', requireLogin, async (req, res) => {
+  app.get('/api/public_users', async (req, res) => {
     const users = await User.find({ isPublic: true }).lean();
     res.send(users);
   });

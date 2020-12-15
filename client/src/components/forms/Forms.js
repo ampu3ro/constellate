@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as actions from '../../actions';
 
 import {
+  Fade,
   Grid,
   Switch,
   FormControl,
@@ -29,6 +30,7 @@ class Forms extends Component {
   render() {
     const {
       classes,
+      TransitionProps,
       showGenres,
       setGenres,
       showOverlap,
@@ -41,20 +43,22 @@ class Forms extends Component {
 
     return (
       <div>
-        <FormControl component="fieldset">
-          <FormControlLabel
-            control={
-              <Switch
-                color="primary"
-                checked={showToggles}
-                onChange={(e) =>
-                  this.setState({ showToggles: e.target.checked })
-                }
-              />
-            }
-            label="Show data toggles"
-          />
-        </FormControl>
+        <Fade {...TransitionProps}>
+          <FormControl component="fieldset">
+            <FormControlLabel
+              control={
+                <Switch
+                  color="primary"
+                  checked={showToggles}
+                  onChange={(e) =>
+                    this.setState({ showToggles: e.target.checked })
+                  }
+                />
+              }
+              label="Show data toggles"
+            />
+          </FormControl>
+        </Fade>
         {showToggles && (
           <Grid container spacing={2} style={{ marginTop: 20 }}>
             <Grid item xs={12} sm={12} md={8}>

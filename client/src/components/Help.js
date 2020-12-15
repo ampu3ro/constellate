@@ -88,15 +88,24 @@ const Help = ({ open, onClose, timeout }) => {
               </Typography>
             )}
             {!currentUser && (
-              <Grid container justify="flex-end">
-                <Button
-                  variant="outlined"
-                  startIcon={<FontAwesomeIcon icon={faSpotify} color="white" />}
-                  onClick={handleClick}
-                >
-                  Connect
-                </Button>
-              </Grid>
+              <div>
+                <Typography paragraph>
+                  If you don't care to see your own data, you can view public
+                  constellations by clicking out of this dialog and selecting
+                  users under "Show data toggles"
+                </Typography>
+                <Grid container justify="flex-end">
+                  <Button
+                    variant="outlined"
+                    startIcon={
+                      <FontAwesomeIcon icon={faSpotify} color="white" />
+                    }
+                    onClick={handleClick}
+                  >
+                    Connect
+                  </Button>
+                </Grid>
+              </div>
             )}
           </div>
         </Paper>
