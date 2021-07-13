@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import * as d3 from 'd3';
 
 import useResizeObserver from '../utils/useResizeObserver';
@@ -45,11 +46,9 @@ const Graphs = ({
   const bubbleLabelRef = useRef();
 
   // https://stackoverflow.com/questions/61515547/redux-useselector-not-updated-need-to-be-refresh
-  const userRef = useRef();
-  const { userActive, artistSelected } = useArtistSelected();
-  useEffect(() => {
-    userRef.current = userActive;
-  }, [userActive]);
+  const artistSelected = useArtistSelected();
+  const userActive = useSelector(({ userActive }) => userActive);
+  const deviceId = useSelector(({ deviceId }) => deviceId);
 
   const effect = () => {
     if (!dims || !data) return;
@@ -151,7 +150,7 @@ const Graphs = ({
       .style('fill', (d) => color(d.layerId))
       .on('mouseover', mouseOver)
       .on('mouseout', mouseOut)
-      .on('click', (d) => artistSelected(userRef.current, d.id))
+      .on('click', (d) => artistSelected(d.id))
       .call(drag());
 
     simulation.nodes(nodes).force('link').links(links);
@@ -446,7 +445,7 @@ const Graphs = ({
     }
   };
 
-  useEffect(effect, [data, dims]);
+  useEffect(effect, [data, dims, userActive, deviceId]);
 
   return (
     <div ref={wrapperRef}>

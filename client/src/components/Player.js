@@ -75,7 +75,8 @@ class Player extends Component {
       this.props.changePlayerState(state);
     });
 
-    this.player.addListener('ready', ({ device_id }) => {
+    this.player.addListener('ready', async ({ device_id }) => {
+      await this.props.setDeviceId(device_id);
       axios
         .put('/api/spotify/player', { deviceId: device_id })
         .catch((err) => console.log(err.response));
@@ -86,8 +87,6 @@ class Player extends Component {
     });
 
     this.player.connect();
-
-    this.props.setDeviceId(this.player._options.id);
   }
 
   render() {

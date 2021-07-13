@@ -8,7 +8,7 @@ export const useArtistSelected = () => {
   const deviceId = useSelector(({ deviceId }) => deviceId);
 
   const artistSelected = useCallback(
-    async (userActive, artistId) => {
+    async (artistId) => {
       if (!artistId) return;
       if (userActive) {
         const selected = await getArtist(artistId);
@@ -20,8 +20,8 @@ export const useArtistSelected = () => {
         dispatch(setNoteOpen(true));
       }
     },
-    [dispatch, deviceId]
+    [dispatch, userActive, deviceId]
   );
 
-  return { userActive, artistSelected };
+  return artistSelected;
 };

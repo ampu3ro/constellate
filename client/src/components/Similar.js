@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { useArtistSelected } from '../hooks';
 
@@ -54,12 +54,9 @@ const Similar = () => {
   const artists = useSelector(({ artists }) => artists);
   const selectedArtist = useSelector(({ selectedArtist }) => selectedArtist);
   const similarArtists = useSelector(({ similarArtists }) => similarArtists);
+  const userActive = useSelector(({ userActive }) => userActive);
 
-  const userRef = useRef();
-  const { userActive, artistSelected } = useArtistSelected();
-  useEffect(() => {
-    userRef.current = userActive;
-  }, [userActive]);
+  const artistSelected = useArtistSelected();
 
   if (!userActive || selectedArtist === null) {
     return <div></div>;
@@ -88,7 +85,7 @@ const Similar = () => {
           <Tooltip title={name} key={id} disableFocusListener>
             <IconButton
               className={classes.similar}
-              onClick={() => artistSelected(userActive, id)}
+              onClick={() => artistSelected(id)}
               disableRipple
               disableFocusRipple
             >
